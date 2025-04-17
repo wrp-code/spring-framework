@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+	<bean id="serviceA" class="com.wrp.spring.lesson001.beanfactory.ServiceA"/>
+
+	<bean id="baseService" abstract="true">
+		<property name="name" value="路人甲Java"/>
+		<property name="serviceA" ref="serviceA"/>
+	</bean>
+
+	<bean id="serviceB" class="com.wrp.spring.lesson001.beanfactory.ServiceB" parent="baseService"/>
+
+	<bean id="serviceC" class="com.wrp.spring.lesson001.beanfactory.ServiceC" parent="baseService">
+		<property name="name" value="欢迎和【路人甲Java】一起学些spring!"/>
+	</bean>
+</beans>

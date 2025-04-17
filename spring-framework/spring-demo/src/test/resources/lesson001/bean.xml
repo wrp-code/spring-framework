@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+	<!--
+	定义一个bean
+	id：bean的唯一标识，可以通过这个标识从容器中获取这个bean对象
+	clss：这个bean的类型，完整类名称
+	-->
+	<bean id="helloWorld" class="com.wrp.spring.lesson001.beanfactory.HelloWorld"/>
+
+
+	<!--	<import resource="引入其他bean xml配置文件" />-->
+	<!--	<bean id="bean标识" class="玩转类型名称"/>-->
+	<!--	优先级id > name， 第一个为名称，其他的为别名 -->
+	<!--	<bean id="bean唯一标识" name="bean名称" class="完整类型名称" factory-bean="工厂bean名称" factory-method="工厂方法"/>-->
+	<!--	<alias name="bean标识" alias="别名" />-->
+</beans>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+	<!--	depend-on的顺序也会影响bean的创建顺序	-->
+	<bean id="bean3" class="com.wrp.spring.lesson001.beanfactory.NormalBean$Bean3" depends-on="bean1,bean2"/>
+	<bean id="bean2" class="com.wrp.spring.lesson001.beanfactory.NormalBean$Bean2"/>
+	<bean id="bean1" class="com.wrp.spring.lesson001.beanfactory.NormalBean$Bean1"/>
+</beans>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+	<!-- 通过id定义bean名称：user1 -->
+	<bean id="user1" class="com.wrp.spring.lesson001.beanfactory.UserModel"/>
+
+	<!-- 通过name定义bean名称：user2 -->
+	<bean name="user2" class="com.wrp.spring.lesson001.beanfactory.UserModel"/>
+
+	<!-- id为名称，name为别名；bean名称：user3，1个别名：[user3_1] -->
+	<bean id="user3" name="user3_1" class="com.wrp.spring.lesson001.beanfactory.UserModel"/>
+
+	<!-- bean名称：user4，多个别名：[user4_1,user4_2,user4_3,user4_4] -->
+	<bean id="user4" name="user4_1,user4_2;user4_3 user4_4" class="com.wrp.spring.lesson001.beanfactory.UserModel"/>
+
+	<!-- bean名称：user5，别名：[user5_1,user5_2,user5_3,user5_4] -->
+	<bean name="user5,user5_1,user5_2;user5_3 user5_4" class="com.wrp.spring.lesson001.beanfactory.UserModel"/>
+
+	<!--	未指定id和name时，bean的名称为bean的class的完整类名#编号， 编号从0开始递增-->
+	<bean class="com.wrp.spring.lesson001.beanfactory.UserModel" />
+	<bean class="com.wrp.spring.lesson001.beanfactory.UserModel" />
+	<bean class="com.wrp.spring.lesson001.beanfactory.UserModel" />
+
+	<bean class="java.lang.String" />
+	<bean class="java.lang.String" />
+
+	<bean id="user6" class="com.wrp.spring.lesson001.beanfactory.UserModel" />
+	<alias name="user6" alias="user6_1" />
+	<alias name="user6" alias="user6_2" />
+
+	<!--	引入其他xml  -->
+	<import resource="bean.xml" />
+</beans>

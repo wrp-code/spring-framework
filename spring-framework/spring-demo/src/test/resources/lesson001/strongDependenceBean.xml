@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+	<bean id="bean3" class="com.wrp.spring.lesson001.beanfactory.StrongDependenceBean$Bean3">
+		<constructor-arg index="0" ref="bean2"/>
+	</bean>
+	<bean id="bean2" class="com.wrp.spring.lesson001.beanfactory.StrongDependenceBean$Bean2">
+		<constructor-arg index="0" ref="bean1"/>
+	</bean>
+	<bean id="bean1" class="com.wrp.spring.lesson001.beanfactory.StrongDependenceBean$Bean1">
+	</bean>
+</beans>

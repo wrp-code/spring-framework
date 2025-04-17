@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+	<!-- 通过构造器参数的名称注入 -->
+	<bean id="diByConstructorParamName" class="com.wrp.spring.lesson001.beanfactory.UserModel">
+		<constructor-arg name="desc" value="我是通过构造器参数类型注入的"/>
+		<constructor-arg name="name" value="保时捷Macans"/>
+	</bean>
+
+</beans>
