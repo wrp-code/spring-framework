@@ -132,15 +132,19 @@ public @interface ComponentScan {
 	 * <p>Consider use of {@link #includeFilters} and {@link #excludeFilters}
 	 * for a more flexible approach.
 	 */
+	// 需要扫描包中的那些资源，默认是：**/*.class
 	String resourcePattern() default ClassPathScanningCandidateComponentProvider.DEFAULT_RESOURCE_PATTERN;
 
 	/**
 	 * Indicates whether automatic detection of classes annotated with {@code @Component}
 	 * {@code @Repository}, {@code @Service}, or {@code @Controller} should be enabled.
 	 */
+	// 凡是类上有@Repository、@Service、@Controller、@Component这几个注解中的任何一个的，
+	// 那么这个类就会被作为bean注册到spring容器中
 	boolean useDefaultFilters() default true;
 
 	/**
+	 * 多个Filter之间是 or 关系
 	 * Specifies which types are eligible for component scanning.
 	 * <p>Further narrows the set of candidate components from everything in {@link #basePackages}
 	 * to everything in the base packages that matches the given filter or filters.
@@ -183,6 +187,7 @@ public @interface ComponentScan {
 		FilterType type() default FilterType.ANNOTATION;
 
 		/**
+		 * 对应：ANNOTATION、ASSIGNABLE_TYPE、CUSTOM三种type
 		 * Alias for {@link #classes}.
 		 * @see #classes
 		 */
@@ -223,6 +228,7 @@ public @interface ComponentScan {
 		Class<?>[] classes() default {};
 
 		/**
+		 * 对应ASPECTJ、REGEX两种类型
 		 * The pattern (or patterns) to use for the filter, as an alternative
 		 * to specifying a Class {@link #value}.
 		 * <p>If {@link #type} is set to {@link FilterType#ASPECTJ ASPECTJ},

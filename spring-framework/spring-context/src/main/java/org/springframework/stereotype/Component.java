@@ -74,6 +74,7 @@ public @interface Component {
 	 * to be turned into a Spring bean name in case of an autodetected component.
 	 * @return the suggested component name, if any (or empty String otherwise)
 	 */
+	// 指定bean的名称，如果不指定，默认为类名首字母小写
 	String value() default "";
 
 }
