@@ -50,4 +50,5 @@ package org.springframework.aop;
  */
 public interface ThrowsAdvice extends AfterAdvice {
 
+	// void afterThrowing([Method, args, target], ThrowableSubclass);
 }

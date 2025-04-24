@@ -70,6 +70,8 @@ public interface MethodMatcher {
 	boolean matches(Method method, Class<?> targetClass);
 
 	/**
+	 * 是否是动态匹配，即是否每次执行目标方法的时候都去验证一下
+	 * 校验方法及方法参数
 	 * Is this {@code MethodMatcher} dynamic, that is, must a final check be made
 	 * via the {@link #matches(Method, Class, Object[])} method at runtime even
 	 * if {@link #matches(Method, Class)} returns {@code true}?

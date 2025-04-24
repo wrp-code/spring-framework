@@ -29,6 +29,9 @@ package org.springframework.aop;
  * @since 04.04.2003
  * @see IntroductionInterceptor
  */
+// 一个Java类，没有实现A接口，在不修改Java类的情况下，
+// 使其具备A接口的功能。
+// 可以通过IntroductionAdvisor给目标类引入更多接口的功能，
 public interface IntroductionAdvisor extends Advisor, IntroductionInfo {
 
 	/**

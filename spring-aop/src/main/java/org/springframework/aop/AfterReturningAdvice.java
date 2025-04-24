@@ -16,9 +16,9 @@
 
 package org.springframework.aop;
 
-import java.lang.reflect.Method;
-
 import org.springframework.lang.Nullable;
+
+import java.lang.reflect.Method;
 
 /**
  * After returning advice is invoked only on normal method return, not if an
@@ -41,6 +41,7 @@ public interface AfterReturningAdvice extends AfterAdvice {
 	 * allowed by the method signature. Otherwise the exception
 	 * will be wrapped as a runtime exception.
 	 */
+	// 目标方法正常执行后，才会回调这个接口，当目标方法有异常，那么这通知会被跳过
 	void afterReturning(@Nullable Object returnValue, Method method, Object[] args, @Nullable Object target) throws Throwable;
 
 }
