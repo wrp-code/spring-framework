@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+	<!-- 通过UserModel的默认构造方法创建UserModel对象 -->
+	<bean id="createBeanByConstructor1" class="com.wrp.spring.lesson001.beanfactory.UserModel"/>
+
+	<!-- 通过UserModel有参构造方法创建UserModel对象 -->
+	<bean id="createBeanByConstructor2" class="com.wrp.spring.lesson001.beanfactory.UserModel">
+		<constructor-arg index="0" value="我是通过UserModel的有参方法构造的对象!"/>
+		<constructor-arg index="1" value="30"/>
+	</bean>
+
+	<!-- 通过工厂静态无参方法创建bean对象 -->
+	<bean id="createBeanByStaticFactoryMethod1" class="com.wrp.spring.lesson001.beanfactory.UserStaticFactory"
+		  factory-method="buildUser1"/>
+
+	<!-- 通过工厂静态有参方法创建bean对象 -->
+	<bean id="createBeanByStaticFactoryMethod2" class="com.wrp.spring.lesson001.beanfactory.UserStaticFactory"
+		  factory-method="buildUser2">
+		<constructor-arg index="0" value="通过工厂静态有参方法创建UerModel实例对象"/>
+		<constructor-arg index="1" value="30"/>
+	</bean>
+
+	<!-- 定义一个工厂实例 -->
+	<bean id="userFactory" class="com.wrp.spring.lesson001.beanfactory.UserFactory"/>
+	<!-- 通过userFactory实例的无参user方法创建UserModel对象 -->
+	<bean id="createBeanByBeanMethod1" factory-bean="userFactory" factory-method="buildUser1"/>
+
+	<!-- 通过userFactory实例的有参user方法创建UserModel对象 -->
+	<bean id="createBeanByBeanMethod2" factory-bean="userFactory" factory-method="buildUser2">
+		<constructor-arg index="0" value="通过bean实例有参方法创建UserModel实例对象"/>
+		<constructor-arg index="1" value="30"/>
+	</bean>
+
+	<!-- 通过FactoryBean 创建UserModel对象 -->
+	<bean id="createByFactoryBean" class="com.wrp.spring.lesson001.beanfactory.UserFactoryBean"/>
+</beans>

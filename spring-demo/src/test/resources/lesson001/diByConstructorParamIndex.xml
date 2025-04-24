@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+	<!-- 通过构造器参数的索引注入 -->
+	<bean id="diByConstructorParamIndex" class="com.wrp.spring.lesson001.beanfactory.UserModel">
+		<constructor-arg index="0" value="路人甲Java"/>
+		<constructor-arg index="1" value="我是通过构造器参数位置注入的"/>
+	</bean>
+
+</beans>

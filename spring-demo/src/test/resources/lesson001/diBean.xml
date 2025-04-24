@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+	<bean id="user" class="com.wrp.spring.lesson001.beanfactory.UserModel"></bean>
+
+	<!-- 通过构造器方式注入容器中的bean -->
+	<bean id="diBeanByConstructor" class="com.wrp.spring.lesson001.beanfactory.PersonModel">
+		<!-- 通过ref引用容器中定义的其他bean，user对应上面定义的id="user"的bean -->
+		<constructor-arg index="0" ref="user"/>
+		<constructor-arg index="1">
+			<bean class="com.wrp.spring.lesson001.beanfactory.CarModel">
+				<constructor-arg index="0" value="宾利"/>
+				<constructor-arg index="1" value=""/>
+			</bean>
+		</constructor-arg>
+	</bean>
+
+	<!-- 通过setter方式注入容器中的bean -->
+	<bean id="diBeanBySetter" class="com.wrp.spring.lesson001.beanfactory.PersonModel">
+		<!-- 通过ref引用容器中定义的其他bean，user对应上面定义的id="user"的bean -->
+		<property name="userModel" ref="user"/>
+		<property name="carModel">
+			<bean class="com.wrp.spring.lesson001.beanfactory.CarModel">
+				<constructor-arg index="0" value="保时捷"/>
+				<constructor-arg index="1" value=""/>
+			</bean>
+		</property>
+	</bean>
+
+</beans>
