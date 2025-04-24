@@ -82,7 +82,7 @@ public class CircleDependentTest {
 		//创建一个BeanFactoryPostProcessor：BeanFactory后置处理器
 		context.addBeanFactoryPostProcessor(beanFactory -> {
 			if (beanFactory instanceof DefaultListableBeanFactory) {
-				//将allowRawInjectionDespiteWrapping设置为true
+				//将allowRawInjectionDespiteWrapping设置为true,允许早期注入的Bean和最终Spring中的Bean不一致。
 				((DefaultListableBeanFactory) beanFactory).setAllowRawInjectionDespiteWrapping(true);
 			}
 		});

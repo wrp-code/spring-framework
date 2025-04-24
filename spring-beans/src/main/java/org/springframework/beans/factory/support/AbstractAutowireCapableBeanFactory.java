@@ -570,11 +570,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (earlySingletonExposure) {
-			// 从一二级缓存中获取
+			// false,从一二级缓存中获取
 			Object earlySingletonReference = getSingleton(beanName, false);
 			//不为空，说明早期已经被获取了。
 			if (earlySingletonReference != null) {
-				// exposedObject是被代理后的
+				// exposedObject可能是被代理后的
 				if (exposedObject == bean) {
 					exposedObject = earlySingletonReference;
 				}
