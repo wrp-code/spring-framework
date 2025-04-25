@@ -10,6 +10,7 @@ dependencies {
 	api(project(":spring-beans"))
 	api(project(":spring-core"))
 	api(project(":spring-expression"))
+	optional("org.aspectj:aspectjweaver")
 	testImplementation 'org.junit.jupiter:junit-jupiter-api'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 	// 引入lombok

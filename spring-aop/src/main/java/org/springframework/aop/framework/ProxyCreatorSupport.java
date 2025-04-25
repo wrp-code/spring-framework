@@ -16,12 +16,13 @@
 
 package org.springframework.aop.framework;
 
+import org.springframework.util.Assert;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.util.Assert;
-
 /**
+ * 他的子类都是手动AOP方式
  * Base class for proxy factories.
  * Provides convenient access to a configurable AopProxyFactory.
  *
