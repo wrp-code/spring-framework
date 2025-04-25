@@ -42,6 +42,7 @@ public interface DecoratingProxy {
 	 * not just the immediate target (in case of multiple nested proxies).
 	 * @return the decorated class (never {@code null})
 	 */
+	// 获取被代理对象的类型
 	Class<?> getDecoratedClass();
 
 }

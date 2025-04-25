@@ -38,6 +38,7 @@ public interface AopProxy {
 	 * @return the new proxy object (never {@code null})
 	 * @see Thread#getContextClassLoader()
 	 */
+	// 创建一个新的代理对象
 	Object getProxy();
 
 	/**

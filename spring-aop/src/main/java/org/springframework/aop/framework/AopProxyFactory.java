@@ -41,6 +41,7 @@ package org.springframework.aop.framework;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
+//使用的是简单工厂模式
 public interface AopProxyFactory {
 
 	/**

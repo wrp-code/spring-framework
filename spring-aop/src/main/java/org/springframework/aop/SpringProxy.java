@@ -24,6 +24,7 @@ package org.springframework.aop;
  * @since 2.0.1
  * @see org.springframework.aop.support.AopUtils#isAopProxy(Object)
  */
+// 标记接口
 public interface SpringProxy {
 
 }

@@ -16,26 +16,8 @@
 
 package org.springframework.aop.framework;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.aopalliance.aop.Advice;
-
-import org.springframework.aop.Advisor;
-import org.springframework.aop.DynamicIntroductionAdvice;
-import org.springframework.aop.IntroductionAdvisor;
-import org.springframework.aop.IntroductionInfo;
-import org.springframework.aop.Pointcut;
-import org.springframework.aop.PointcutAdvisor;
-import org.springframework.aop.SpringProxy;
-import org.springframework.aop.TargetSource;
+import org.springframework.aop.*;
 import org.springframework.aop.support.DefaultIntroductionAdvisor;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.target.EmptyTargetSource;
@@ -45,6 +27,12 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Base class for AOP proxy configuration managers.
@@ -82,9 +70,11 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	TargetSource targetSource = EMPTY_TARGET_SOURCE;
 
 	/** Whether the Advisors are already filtered for the specific target class. */
+	// true，直接跳过类匹配。
 	private boolean preFiltered = false;
 
 	/** The AdvisorChainFactory to use. */
+	// 用来获取目标方法的调用链
 	private AdvisorChainFactory advisorChainFactory = DefaultAdvisorChainFactory.INSTANCE;
 
 	/**
@@ -97,6 +87,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	 * List of Advisors. If an Advice is added, it will be wrapped
 	 * in an Advisor before being added to this List.
 	 */
+	// 存储通知顾问 DefaultPointcutAdvisor
 	private List<Advisor> advisors = new ArrayList<>();
 
 	/**
@@ -108,6 +99,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	private List<Advisor> advisorKey = this.advisors;
 
 	/** Cache with Method as key and advisor chain List as value. */
+	// 以方法为键，以顾问链表为值的缓存
 	@Nullable
 	private transient Map<MethodCacheKey, List<Object>> methodCache;
 
@@ -441,6 +433,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 			throw new AopConfigException("DynamicIntroductionAdvice may only be added as part of IntroductionAdvisor");
 		}
 		else {
+			// 默认将advice包装成DefaultPointcutAdvisor
 			addAdvisor(pos, new DefaultPointcutAdvisor(advice));
 		}
 	}
@@ -510,6 +503,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	 * @param targetClass the target class
 	 * @return a List of MethodInterceptors (may also include InterceptorAndDynamicMethodMatchers)
 	 */
+	//基于当前配置，获取给定方法的方法调用链列表
 	public List<Object> getInterceptorsAndDynamicInterceptionAdvice(Method method, @Nullable Class<?> targetClass) {
 		List<Object> cachedInterceptors;
 		if (this.methodCache != null) {

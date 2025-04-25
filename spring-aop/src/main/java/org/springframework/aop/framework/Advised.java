@@ -35,6 +35,7 @@ import org.springframework.aop.TargetSource;
  * @since 13.03.2003
  * @see org.springframework.aop.framework.AdvisedSupport
  */
+// 代理对象都是实现了Advised接口，可以动态变更代理对象中的通知
 public interface Advised extends TargetClassAware {
 
 	/**
@@ -49,12 +50,14 @@ public interface Advised extends TargetClassAware {
 	boolean isProxyTargetClass();
 
 	/**
+	 * 获取配置中需要代理的接口列表
 	 * Return the interfaces proxied by the AOP proxy.
 	 * <p>Will not include the target class, which may also be proxied.
 	 */
 	Class<?>[] getProxiedInterfaces();
 
 	/**
+	 * 判断指定接口是否被代理
 	 * Determine whether the given interface is proxied.
 	 * @param ifc the interface to check
 	 */
@@ -93,6 +96,7 @@ public interface Advised extends TargetClassAware {
 	boolean isExposeProxy();
 
 	/**
+	 * true，做了预处理，只包含了适用的顾问，为代理调用构建实际的advisor链时可以跳过ClassFilter检查。
 	 * Set whether this proxy configuration is pre-filtered so that it only
 	 * contains applicable advisors (matching this proxy's target class).
 	 * <p>Default is "false". Set this to "true" if the advisors have been
@@ -226,6 +230,7 @@ public interface Advised extends TargetClassAware {
 	int indexOf(Advice advice);
 
 	/**
+	 * 将代理配置转换为字符串，这个方便排错和调试使用的
 	 * As {@code toString()} will normally be delegated to the target,
 	 * this returns the equivalent for the AOP proxy.
 	 * @return a string description of the proxy configuration

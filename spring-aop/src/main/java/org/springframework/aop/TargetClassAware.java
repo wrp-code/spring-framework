@@ -32,6 +32,7 @@ import org.springframework.lang.Nullable;
 public interface TargetClassAware {
 
 	/**
+	 * 获取被代理对象的Class类型
 	 * Return the target class behind the implementing object
 	 * (typically a proxy configuration or an actual proxy).
 	 * @return the target Class, or {@code null} if not known

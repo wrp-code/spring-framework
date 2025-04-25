@@ -16,9 +16,9 @@
 
 package org.springframework.aop.framework;
 
-import java.io.Serializable;
-
 import org.springframework.util.Assert;
+
+import java.io.Serializable;
 
 /**
  * Convenience superclass for configuration used in creating proxies,
@@ -33,15 +33,20 @@ public class ProxyConfig implements Serializable {
 	/** use serialVersionUID from Spring 1.2 for interoperability. */
 	private static final long serialVersionUID = -8409359707199703185L;
 
-
+	// 是否使用CGLIB
 	private boolean proxyTargetClass = false;
 
+	// 是否增强代理对象，true，代理对象被创建后，增强的修改将不会生效
+	// 如果exposeProxy设置为true，即使optimize为true也会被忽略，即修改增强后会生效。
 	private boolean optimize = false;
 
+	// 是否阻止代理对象转换为Advised类型
 	boolean opaque = false;
 
+	// 代理对象是否可以通过AopContext以ThreadLocal暴露
 	boolean exposeProxy = false;
 
+	// 是否冻结配置,true，无法修改通知
 	private boolean frozen = false;
 
 
