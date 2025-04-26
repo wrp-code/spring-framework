@@ -16,13 +16,9 @@
 
 package org.springframework.scheduling.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import org.springframework.aot.hint.annotation.Reflective;
+
+import java.lang.annotation.*;
 
 /**
  * Annotation that marks a method as a candidate for <i>asynchronous</i> execution.
@@ -61,6 +57,7 @@ import org.springframework.aot.hint.annotation.Reflective;
 public @interface Async {
 
 	/**
+	 * 指定线程池
 	 * A qualifier value for the specified asynchronous operation(s).
 	 * <p>May be used to determine the target executor to be used when executing
 	 * the asynchronous operation(s), matching the qualifier value (or the bean

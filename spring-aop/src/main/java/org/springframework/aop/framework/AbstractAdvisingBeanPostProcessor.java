@@ -16,15 +16,15 @@
 
 package org.springframework.aop.framework;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.springframework.aop.Advisor;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 import org.springframework.core.SmartClassLoader;
 import org.springframework.lang.Nullable;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Base class for {@link BeanPostProcessor} implementations that apply a
@@ -151,6 +151,7 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 	}
 
 	/**
+	 * 是否是合适的
 	 * Check whether the given class is eligible for advising with this
 	 * post-processor's {@link Advisor}.
 	 * <p>Implements caching of {@code canApply} results per bean target class.

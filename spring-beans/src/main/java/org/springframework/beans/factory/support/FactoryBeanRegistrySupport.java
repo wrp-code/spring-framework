@@ -16,9 +16,6 @@
 
 package org.springframework.beans.factory.support;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanCurrentlyInCreationException;
@@ -27,6 +24,9 @@ import org.springframework.beans.factory.FactoryBeanNotInitializedException;
 import org.springframework.core.AttributeAccessor;
 import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Support base class for singleton registries which need to handle
@@ -117,9 +117,11 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 	 * @see org.springframework.beans.factory.FactoryBean#getObject()
 	 */
 	protected Object getObjectFromFactoryBean(FactoryBean<?> factory, String beanName, boolean shouldPostProcess) {
+		// 单例
 		if (factory.isSingleton() && containsSingleton(beanName)) {
 			this.singletonLock.lock();
 			try {
+				// 从缓存中获取
 				Object object = this.factoryBeanObjectCache.get(beanName);
 				if (object == null) {
 					object = doGetObjectFromFactoryBean(factory, beanName);
@@ -148,6 +150,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 							}
 						}
 						if (containsSingleton(beanName)) {
+							// 保存到缓存
 							this.factoryBeanObjectCache.put(beanName, object);
 						}
 					}
@@ -159,6 +162,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 			}
 		}
 		else {
+			// 多例，直接创建
 			Object object = doGetObjectFromFactoryBean(factory, beanName);
 			if (shouldPostProcess) {
 				try {
