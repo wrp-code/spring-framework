@@ -16,43 +16,24 @@
 
 package org.springframework.transaction.jta;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Properties;
-
-import javax.naming.NamingException;
-
-import jakarta.transaction.HeuristicMixedException;
-import jakarta.transaction.HeuristicRollbackException;
-import jakarta.transaction.InvalidTransactionException;
-import jakarta.transaction.NotSupportedException;
-import jakarta.transaction.RollbackException;
-import jakarta.transaction.Status;
-import jakarta.transaction.SystemException;
-import jakarta.transaction.Transaction;
 import jakarta.transaction.TransactionManager;
-import jakarta.transaction.TransactionSynchronizationRegistry;
-import jakarta.transaction.UserTransaction;
-
+import jakarta.transaction.*;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jndi.JndiTemplate;
 import org.springframework.lang.Nullable;
-import org.springframework.transaction.CannotCreateTransactionException;
-import org.springframework.transaction.HeuristicCompletionException;
-import org.springframework.transaction.IllegalTransactionStateException;
-import org.springframework.transaction.InvalidIsolationLevelException;
-import org.springframework.transaction.NestedTransactionNotSupportedException;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionSuspensionNotSupportedException;
-import org.springframework.transaction.TransactionSystemException;
-import org.springframework.transaction.UnexpectedRollbackException;
+import org.springframework.transaction.*;
 import org.springframework.transaction.support.AbstractPlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionStatus;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import javax.naming.NamingException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * {@link org.springframework.transaction.PlatformTransactionManager} implementation
@@ -108,6 +89,7 @@ import org.springframework.util.StringUtils;
  * @see #setTransactionManagerName
  * @see #setTransactionManager
  */
+// 分布式事务
 @SuppressWarnings("serial")
 public class JtaTransactionManager extends AbstractPlatformTransactionManager
 		implements TransactionFactory, InitializingBean, Serializable {

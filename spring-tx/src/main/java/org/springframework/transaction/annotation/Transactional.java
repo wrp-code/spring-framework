@@ -16,16 +16,11 @@
 
 package org.springframework.transaction.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import org.springframework.aot.hint.annotation.Reflective;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.transaction.TransactionDefinition;
+
+import java.lang.annotation.*;
 
 /**
  * Describes a transaction attribute on an individual method or on a class.
@@ -124,6 +119,9 @@ import org.springframework.transaction.TransactionDefinition;
 @Inherited
 @Documented
 @Reflective
+// 放在类上，对类及其子类的所有public方法都有效
+// 只对public方法有效
+// 目标方法抛出RuntimeException或者Error的时候，事务会被回滚。
 public @interface Transactional {
 
 	/**
@@ -152,6 +150,7 @@ public @interface Transactional {
 	 * @see org.springframework.transaction.PlatformTransactionManager
 	 * @see org.springframework.transaction.ReactiveTransactionManager
 	 */
+	// 指定事务管理器的bean名称
 	@AliasFor("value")
 	String transactionManager() default "";
 
@@ -168,6 +167,20 @@ public @interface Transactional {
 	String[] label() default {};
 
 	/**
+	 * 事务的传播属性：必须在同一个事务管理器中才有效
+	 *
+	 * REQUIRED 如果当前事务管理器中没有事务，就新建一个事务，
+	 * 			如果已经存在一个事务中，加入到这个事务中。
+	 * 			这是最常见的选择，是默认的传播行为。
+	 * SUPPORTS 支持当前事务，如果当前事务管理器中没有事务，就以非事务方式执行。
+	 * MANDATORY 使用当前的事务，如果当前事务管理器中没有事务，就抛出异常。
+	 * REQUIRES_NEW 新建事务，如果当前事务管理器中存在事务，把当前事务挂起，然后会新建一个事务。
+	 * NOT_SUPPORTED 以非事务方式执行操作，如果当前事务管理器中存在事务，就把当前事务挂起。
+	 * NEVER 以非事务方式执行，如果当前事务管理器中存在事务，则抛出异常。
+	 * NESTED 如果当前事务管理器中存在事务，则在嵌套事务内执行；
+	 * 			如果当前事务管理器中没有事务，则执行与PROPAGATION_REQUIRED类似的操作。
+	 *
+	 *
 	 * The transaction propagation type.
 	 * <p>Defaults to {@link Propagation#REQUIRED}.
 	 * @see org.springframework.transaction.interceptor.TransactionAttribute#getPropagationBehavior()
@@ -175,6 +188,7 @@ public @interface Transactional {
 	Propagation propagation() default Propagation.REQUIRED;
 
 	/**
+	 * 事务的隔离级别，就是制定数据库的隔离级别
 	 * The transaction isolation level.
 	 * <p>Defaults to {@link Isolation#DEFAULT}.
 	 * <p>Exclusively designed for use with {@link Propagation#REQUIRED} or
@@ -189,6 +203,7 @@ public @interface Transactional {
 	Isolation isolation() default Isolation.DEFAULT;
 
 	/**
+	 * 事务执行的超时时间（秒）
 	 * The timeout for this transaction (in seconds).
 	 * <p>Defaults to the default timeout of the underlying transaction system.
 	 * <p>Exclusively designed for use with {@link Propagation#REQUIRED} or
@@ -212,6 +227,8 @@ public @interface Transactional {
 	String timeoutString() default "";
 
 	/**
+	 * 是否是只读事务，比如某个方法中只有查询操作，我们可以指定事务是只读的
+	 * 设置了这个参数，可能数据库会做一些性能优化，提升查询速度
 	 * A boolean flag that can be set to {@code true} if the transaction is
 	 * effectively read-only, allowing for corresponding optimizations at runtime.
 	 * <p>Defaults to {@code false}.
@@ -226,6 +243,10 @@ public @interface Transactional {
 	boolean readOnly() default false;
 
 	/**
+	 *
+	 * 定义零(0)个或更多异常类，这些异常类必须是Throwable的子类，当方法抛出这些异常及其子类异常的时候，spring会让事务回滚
+	 * 如果不配做，那么默认会在 RuntimeException 或者 Error 情况下，事务才会回滚
+	 *
 	 * Defines zero (0) or more exception {@linkplain Class types}, which must be
 	 * subclasses of {@link Throwable}, indicating which exception types must cause
 	 * a transaction rollback.
@@ -244,6 +265,7 @@ public @interface Transactional {
 	Class<? extends Throwable>[] rollbackFor() default {};
 
 	/**
+	 * 和 rollbackFor 作用一样，只是这个地方使用的是类名
 	 * Defines zero (0) or more exception name patterns (for exceptions which must be a
 	 * subclass of {@link Throwable}), indicating which exception types must cause
 	 * a transaction rollback.
@@ -257,6 +279,7 @@ public @interface Transactional {
 	String[] rollbackForClassName() default {};
 
 	/**
+	 * 定义零(0)个或更多异常类，这些异常类必须是Throwable的子类，当方法抛出这些异常的时候，事务不会回滚
 	 * Defines zero (0) or more exception {@link Class types}, which must be
 	 * subclasses of {@link Throwable}, indicating which exception types must
 	 * <b>not</b> cause a transaction rollback.
@@ -271,6 +294,8 @@ public @interface Transactional {
 	Class<? extends Throwable>[] noRollbackFor() default {};
 
 	/**
+	 *
+	 * 和 noRollbackFor 作用一样，只是这个地方使用的是类名
 	 * Defines zero (0) or more exception name patterns (for exceptions which must be a
 	 * subclass of {@link Throwable}) indicating which exception types must <b>not</b>
 	 * cause a transaction rollback.

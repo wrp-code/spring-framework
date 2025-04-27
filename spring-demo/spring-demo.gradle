@@ -10,6 +10,8 @@ dependencies {
 	api(project(":spring-beans"))
 	api(project(":spring-core"))
 	api(project(":spring-expression"))
+	api(project(":spring-tx"))
+	api(project(":spring-jdbc"))
 	optional("org.aspectj:aspectjweaver")
 	testImplementation 'org.junit.jupiter:junit-jupiter-api'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
@@ -21,4 +23,5 @@ dependencies {
 
 	implementation("jakarta.annotation:jakarta.annotation-api:2.0.0")
 	implementation("org.redisson:redisson:3.13.3")
+	implementation("org.postgresql:postgresql:42.7.5")
 }

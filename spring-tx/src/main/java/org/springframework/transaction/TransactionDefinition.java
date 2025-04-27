@@ -44,6 +44,7 @@ import org.springframework.lang.Nullable;
 public interface TransactionDefinition {
 
 	/**
+	 * 存在事务则加入该事务；没有事务则创建一个新的事务
 	 * Support a current transaction; create a new one if none exists.
 	 * Analogous to the EJB transaction attribute of the same name.
 	 * <p>This is typically the default setting of a transaction definition
@@ -52,6 +53,7 @@ public interface TransactionDefinition {
 	int PROPAGATION_REQUIRED = 0;
 
 	/**
+	 * 存在事务则加入该事务；没有事务则以非事务执行
 	 * Support a current transaction; execute non-transactionally if none exists.
 	 * Analogous to the EJB transaction attribute of the same name.
 	 * <p><b>NOTE:</b> For transaction managers with transaction synchronization,
@@ -73,6 +75,7 @@ public interface TransactionDefinition {
 	int PROPAGATION_SUPPORTS = 1;
 
 	/**
+	 * 存在事务则加入该事务；没有事务则抛出异常
 	 * Support a current transaction; throw an exception if no current transaction
 	 * exists. Analogous to the EJB transaction attribute of the same name.
 	 * <p>Note that transaction synchronization within a {@code PROPAGATION_MANDATORY}
@@ -81,6 +84,7 @@ public interface TransactionDefinition {
 	int PROPAGATION_MANDATORY = 2;
 
 	/**
+	 * 创建一个新事务，并且如果存在事务则挂起旧事务
 	 * Create a new transaction, suspending the current transaction if one exists.
 	 * Analogous to the EJB transaction attribute of the same name.
 	 * <p><b>NOTE:</b> Actual transaction suspension will not work out-of-the-box
@@ -96,6 +100,7 @@ public interface TransactionDefinition {
 	int PROPAGATION_REQUIRES_NEW = 3;
 
 	/**
+	 * 以非事务方式执行, 并且如果存在事务则挂起旧事务。
 	 * Do not support a current transaction; rather always execute non-transactionally.
 	 * Analogous to the EJB transaction attribute of the same name.
 	 * <p><b>NOTE:</b> Actual transaction suspension will not work out-of-the-box
@@ -111,6 +116,7 @@ public interface TransactionDefinition {
 	int PROPAGATION_NOT_SUPPORTED = 4;
 
 	/**
+	 * 以非事务方式执行，如果存在事务则抛出异常
 	 * Do not support a current transaction; throw an exception if a current transaction
 	 * exists. Analogous to the EJB transaction attribute of the same name.
 	 * <p>Note that transaction synchronization is <i>not</i> available within a
@@ -119,6 +125,7 @@ public interface TransactionDefinition {
 	int PROPAGATION_NEVER = 5;
 
 	/**
+	 * 没有事务则新建一个事务；存在事务则以嵌套事务执行
 	 * Execute within a nested transaction if a current transaction exists,
 	 * behaving like {@link #PROPAGATION_REQUIRED} otherwise. There is no
 	 * analogous feature in EJB.
@@ -200,6 +207,7 @@ public interface TransactionDefinition {
 	 * @see #PROPAGATION_REQUIRED
 	 * @see org.springframework.transaction.support.TransactionSynchronizationManager#isActualTransactionActive()
 	 */
+	// 事务的传播行为
 	default int getPropagationBehavior() {
 		return PROPAGATION_REQUIRED;
 	}
@@ -222,6 +230,7 @@ public interface TransactionDefinition {
 	 * @see #ISOLATION_DEFAULT
 	 * @see org.springframework.transaction.support.AbstractPlatformTransactionManager#setValidateExistingTransaction
 	 */
+	// 隔离级别
 	default int getIsolationLevel() {
 		return ISOLATION_DEFAULT;
 	}
@@ -237,6 +246,7 @@ public interface TransactionDefinition {
 	 * <p>The default is {@link #TIMEOUT_DEFAULT}.
 	 * @return the transaction timeout
 	 */
+	// 超时时间
 	default int getTimeout() {
 		return TIMEOUT_DEFAULT;
 	}
@@ -258,6 +268,7 @@ public interface TransactionDefinition {
 	 * @see org.springframework.transaction.support.TransactionSynchronization#beforeCommit(boolean)
 	 * @see org.springframework.transaction.support.TransactionSynchronizationManager#isCurrentTransactionReadOnly()
 	 */
+	// 是否只读
 	default boolean isReadOnly() {
 		return false;
 	}
