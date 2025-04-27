@@ -27,6 +27,12 @@ import org.springframework.aot.hint.annotation.Reflective;
 import org.springframework.core.annotation.AliasFor;
 
 /**
+ *有3种情况，结果不会丢到缓存
+ *
+ * 当方法向外抛出的时候
+ * condition的计算结果为false的时候
+ * unless的计算结果为true的时候
+ *
  * Annotation indicating that a method (or all methods on a class) triggers a
  * {@link org.springframework.cache.Cache#put(Object, Object) cache put} operation.
  *
@@ -52,6 +58,7 @@ import org.springframework.core.annotation.AliasFor;
 @Inherited
 @Documented
 @Reflective
+// 添加缓存
 public @interface CachePut {
 
 	/**

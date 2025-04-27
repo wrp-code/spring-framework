@@ -85,6 +85,7 @@ public @interface Cacheable {
 	 * @see #value
 	 * @see CacheConfig#cacheNames
 	 */
+	// 设置缓存名称
 	@AliasFor("value")
 	String[] cacheNames() default {};
 
@@ -105,6 +106,7 @@ public @interface Cacheable {
 	 * can also be accessed by name if that information is available.</li>
 	 * </ul>
 	 */
+	// key生成策略
 	String key() default "";
 
 	/**
@@ -150,6 +152,7 @@ public @interface Cacheable {
 	 * can also be accessed by name if that information is available.</li>
 	 * </ul>
 	 */
+	// 判断方法是否走缓存
 	String condition() default "";
 
 	/**
@@ -175,6 +178,7 @@ public @interface Cacheable {
 	 * </ul>
 	 * @since 3.2
 	 */
+	//unless为true，方法返回结果不会丢到缓存中；unless为false，方法返回结果会丢到缓存中。
 	String unless() default "";
 
 	/**

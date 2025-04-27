@@ -20,4 +20,5 @@ dependencies {
 	testAnnotationProcessor('org.projectlombok:lombok:1.18.32')
 
 	implementation("jakarta.annotation:jakarta.annotation-api:2.0.0")
+	implementation("org.redisson:redisson:3.13.3")
 }

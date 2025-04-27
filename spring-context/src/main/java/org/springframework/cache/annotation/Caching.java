@@ -40,6 +40,7 @@ import org.springframework.aot.hint.annotation.Reflective;
 @Inherited
 @Documented
 @Reflective
+// 缓存注解组
 public @interface Caching {
 
 	Cacheable[] cacheable() default {};

@@ -132,6 +132,9 @@ public @interface CacheEvict {
 	String condition() default "";
 
 	/**
+	 * 是否清理 cacheNames 指定的缓存中的所有缓存信息，默认是false
+	 *  可以将一个cache想象为一个HashMap，当 allEntries 为true的时候，相当于HashMap.clear()
+	 *  当 allEntries 为false的时候，只会干掉key对应的数据，相当于HashMap.remove(key)
 	 * Whether all the entries inside the cache(s) are removed.
 	 * <p>By default, only the value under the associated key is removed.
 	 * <p>Note that setting this parameter to {@code true} and specifying a
@@ -140,6 +143,9 @@ public @interface CacheEvict {
 	boolean allEntries() default false;
 
 	/**
+	 * 何时执行清除操作（方法执行前 or 方法执行成功之后）
+	 *      true：@CacheEvict 标注的方法执行之前，执行清除操作
+	 *      false：@CacheEvict 标注的方法执行成功之后，执行清除操作，当方法弹出异常的时候，不会执行清除操作
 	 * Whether the eviction should occur before the method is invoked.
 	 * <p>Setting this attribute to {@code true}, causes the eviction to
 	 * occur irrespective of the method outcome (i.e., whether it threw an

@@ -37,6 +37,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+// 可以将其他几个缓存注解（@Cacheable、@CachePut和@CacheEvic）的公共参数给提取出来放在@CacheConfig中。
 public @interface CacheConfig {
 
 	/**

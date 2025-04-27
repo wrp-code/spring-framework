@@ -1,0 +1,11 @@
+
+singleServerConfig:
+  address: "redis://127.0.0.1:6379"
+  password: wrp@REDISatSMGI0601
+  clientName: null
+  database: 7 #选择使用哪个数据库0~15
+  idleConnectionTimeout: 10000
+  connectTimeout: 10000
+  timeout: 3000
+codec:
+  class: "org.redisson.codec.JsonJacksonCodec"
