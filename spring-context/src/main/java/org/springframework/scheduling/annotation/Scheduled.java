@@ -16,16 +16,11 @@
 
 package org.springframework.scheduling.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.concurrent.TimeUnit;
-
 import org.springframework.aot.hint.annotation.Reflective;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+
+import java.lang.annotation.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Annotation that marks a method to be scheduled. For periodic tasks, exactly one
@@ -113,6 +108,7 @@ public @interface Scheduled {
 	 * @return an expression that can be parsed to a cron schedule
 	 * @see org.springframework.scheduling.support.CronExpression#parse(String)
 	 */
+	// 支持占位符
 	String cron() default "";
 
 	/**
@@ -124,6 +120,7 @@ public @interface Scheduled {
 	 * @see org.springframework.scheduling.support.CronTrigger#CronTrigger(String, java.util.TimeZone)
 	 * @see java.util.TimeZone
 	 */
+	// cron表达式会基于该时区解析。默认是一个空字符串，即取服务器所在地的时区
 	String zone() default "";
 
 	/**
@@ -132,6 +129,7 @@ public @interface Scheduled {
 	 * {@link #timeUnit}.
 	 * @return the period
 	 */
+	// 上一次开始执行时间点之后多长时间再执行。
 	long fixedRate() default -1;
 
 	/**
@@ -153,6 +151,7 @@ public @interface Scheduled {
 	 * @since 3.2.2
 	 * @see #fixedRate()
 	 */
+	// 上一次开始执行时间点之后多长时间再执行，支持占位符
 	String fixedRateString() default "";
 
 	/**
@@ -165,6 +164,7 @@ public @interface Scheduled {
 	 * with {@link org.springframework.scheduling.concurrent.SimpleAsyncTaskScheduler}.
 	 * @return the delay
 	 */
+	// 上一次执行完毕时间点之后多长时间再执行
 	long fixedDelay() default -1;
 
 	/**
@@ -189,6 +189,7 @@ public @interface Scheduled {
 	 * @since 3.2.2
 	 * @see #fixedDelay()
 	 */
+	// 上一次执行完毕时间点之后多长时间再执行。支持占位符
 	String fixedDelayString() default "";
 
 	/**
@@ -199,6 +200,7 @@ public @interface Scheduled {
 	 * @return the initial
 	 * @since 3.2
 	 */
+	// 第一次延迟多长时间后再执行。
 	long initialDelay() default -1;
 
 	/**
@@ -221,6 +223,7 @@ public @interface Scheduled {
 	 * @since 3.2.2
 	 * @see #initialDelay()
 	 */
+	// 第一次延迟多长时间后再执行。支持占位符
 	String initialDelayString() default "";
 
 	/**

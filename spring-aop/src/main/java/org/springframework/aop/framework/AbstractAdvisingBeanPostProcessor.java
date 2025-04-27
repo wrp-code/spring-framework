@@ -86,12 +86,14 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) {
+		// 在这里动态增加了advisor
 		if (this.advisor == null || bean instanceof AopInfrastructureBean) {
 			// Ignore AOP infrastructure such as scoped proxies.
 			return bean;
 		}
 
 		if (bean instanceof Advised advised) {
+			// 配置没有被冻结，说明可以动态修改
 			if (!advised.isFrozen() && isEligible(AopUtils.getTargetClass(bean))) {
 				// Add our local Advisor to the existing proxy's Advisor chain.
 				if (this.beforeExistingAdvisors) {
