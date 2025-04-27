@@ -46,4 +46,16 @@ public class BeanDefinitionTest {
 		System.out.println(beanFactory.getMergedBeanDefinition("user4"));
 		System.out.println(beanFactory.getMergedBeanDefinition("user5"));
 	}
+
+	@Test
+	public void getBean() {
+		// bean生命周期阶段1.BeanDefinition定义阶段
+		// bean生命周期阶段2.BeanDefinition元信息解析阶段
+		AbstractBeanDefinition beanDefinition = BeanDefinitionBuilder.genericBeanDefinition(User.class).getBeanDefinition();
+		DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+		// bean生命周期阶段3. BeanDefinition注册阶段
+		beanFactory.registerBeanDefinition("user", beanDefinition);
+		User user = beanFactory.getBean("user", User.class);
+		Assertions.assertNotNull(user);
+	}
 }
