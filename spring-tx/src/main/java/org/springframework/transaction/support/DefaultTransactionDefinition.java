@@ -35,6 +35,7 @@ import org.springframework.util.Assert;
  * @author Sam Brannen
  * @since 08.05.2003
  */
+// 一般编程式事务使用
 @SuppressWarnings("serial")
 public class DefaultTransactionDefinition implements TransactionDefinition, Serializable {
 

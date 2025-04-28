@@ -131,6 +131,7 @@ public abstract class AbstractPlatformTransactionManager
 
 	private int defaultTimeout = TransactionDefinition.TIMEOUT_DEFAULT;
 
+	// 是否支持内部事务
 	private boolean nestedTransactionAllowed = false;
 
 	private boolean validateExistingTransaction = false;
@@ -373,13 +374,15 @@ public abstract class AbstractPlatformTransactionManager
 	public final TransactionStatus getTransaction(@Nullable TransactionDefinition definition)
 			throws TransactionException {
 
-		// Use defaults if no transaction definition given.
+		// 若传入的definition如果为空，取默认的
 		TransactionDefinition def = (definition != null ? definition : TransactionDefinition.withDefaults());
 
+		// 获取事务对象
 		Object transaction = doGetTransaction();
 		boolean debugEnabled = logger.isDebugEnabled();
 
 		if (isExistingTransaction(transaction)) {
+			// 当前存在事务
 			// Existing transaction found -> check propagation behavior to find out how to behave.
 			return handleExistingTransaction(def, transaction, debugEnabled);
 		}
@@ -389,7 +392,8 @@ public abstract class AbstractPlatformTransactionManager
 			throw new InvalidTimeoutException("Invalid transaction timeout", def.getTimeout());
 		}
 
-		// No existing transaction found -> check propagation behavior to find out how to proceed.
+		// 当前没有事务
+		// 若事务传播级别是PROPAGATION_MANDATORY：要求必须存在事务，若当前没有事务，弹出异常
 		if (def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_MANDATORY) {
 			throw new IllegalTransactionStateException(
 					"No existing transaction found for transaction marked with propagation 'mandatory'");
@@ -397,11 +401,13 @@ public abstract class AbstractPlatformTransactionManager
 		else if (def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRED ||
 				def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRES_NEW ||
 				def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NESTED) {
+			// 挂起事务
 			SuspendedResourcesHolder suspendedResources = suspend(null);
 			if (debugEnabled) {
 				logger.debug("Creating new transaction with name [" + def.getName() + "]: " + def);
 			}
 			try {
+				//开始新事务
 				return startTransaction(def, transaction, false, debugEnabled, suspendedResources);
 			}
 			catch (RuntimeException | Error ex) {
@@ -415,6 +421,8 @@ public abstract class AbstractPlatformTransactionManager
 				logger.warn("Custom isolation level specified but no actual transaction initiated; " +
 						"isolation level will effectively be ignored: " + def);
 			}
+			// 剩余的传播行为，(PROPAGATION_SUPPORTS、PROPAGATION_NOT_SUPPORTED、PROPAGATION_NEVER)
+			// 是否开启新的事务同步, 是spring在事务过程中给开发者预留的一些扩展点
 			boolean newSynchronization = (getTransactionSynchronization() == SYNCHRONIZATION_ALWAYS);
 			return prepareTransactionStatus(def, null, true, newSynchronization, debugEnabled, null);
 		}
@@ -524,17 +532,22 @@ public abstract class AbstractPlatformTransactionManager
 	private TransactionStatus startTransaction(TransactionDefinition definition, Object transaction,
 			boolean nested, boolean debugEnabled, @Nullable SuspendedResourcesHolder suspendedResources) {
 
+		// 是否开启新的事务同步, 是spring在事务过程中给开发者预留的一些扩展点
+		// 每个新的事务newSynchronization都是true
 		boolean newSynchronization = (getTransactionSynchronization() != SYNCHRONIZATION_NEVER);
+		// 创建事务状态对象
 		DefaultTransactionStatus status = newTransactionStatus(
 				definition, transaction, true, newSynchronization, nested, debugEnabled, suspendedResources);
 		this.transactionExecutionListeners.forEach(listener -> listener.beforeBegin(status));
 		try {
+			// 开启事务
 			doBegin(transaction, definition);
 		}
 		catch (RuntimeException | Error ex) {
 			this.transactionExecutionListeners.forEach(listener -> listener.afterBegin(status, ex));
 			throw ex;
 		}
+		// 准备事务同步
 		prepareSynchronization(status, definition);
 		this.transactionExecutionListeners.forEach(listener -> listener.afterBegin(status, null));
 		return status;
@@ -549,7 +562,7 @@ public abstract class AbstractPlatformTransactionManager
 	private DefaultTransactionStatus prepareTransactionStatus(
 			TransactionDefinition definition, @Nullable Object transaction, boolean newTransaction,
 			boolean newSynchronization, boolean debug, @Nullable Object suspendedResources) {
-
+		// 创建事务状态对象
 		DefaultTransactionStatus status = newTransactionStatus(
 				definition, transaction, newTransaction, newSynchronization, false, debug, suspendedResources);
 		prepareSynchronization(status, definition);

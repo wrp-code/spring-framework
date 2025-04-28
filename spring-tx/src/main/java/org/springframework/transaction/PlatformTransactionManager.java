@@ -44,6 +44,11 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.transaction.ReactiveTransactionManager
  * @see ConfigurableTransactionManager
  */
+// 常用：
+// JpaTransactionManager（jpa）、
+// DataSourceTransactionManager（mybatis、jdbc）、
+// HibernateTransactionManager（hibernate）、
+// JtaTransactionManager（分布式事务）
 public interface PlatformTransactionManager extends TransactionManager {
 
 	/**
@@ -69,7 +74,7 @@ public interface PlatformTransactionManager extends TransactionManager {
 	 * @see TransactionDefinition#getTimeout
 	 * @see TransactionDefinition#isReadOnly
 	 */
-	// 获取一个事务
+	// 获取一个事务，返回TransactionStatus：内部包含事务的状态信息
 	TransactionStatus getTransaction(@Nullable TransactionDefinition definition) throws TransactionException;
 
 	/**

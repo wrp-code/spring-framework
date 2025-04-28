@@ -244,7 +244,9 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 	@Override
 	protected Object doGetTransaction() {
+		//创建数据源事务对象
 		DataSourceTransactionObject txObject = new DataSourceTransactionObject();
+		// 是否支持内部事务
 		txObject.setSavepointAllowed(isNestedTransactionAllowed());
 		ConnectionHolder conHolder =
 				(ConnectionHolder) TransactionSynchronizationManager.getResource(obtainDataSource());
@@ -264,38 +266,50 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 		Connection con = null;
 
 		try {
+			// hasConnectionHolder == false说明还没有连接
 			if (!txObject.hasConnectionHolder() ||
 					txObject.getConnectionHolder().isSynchronizedWithTransaction()) {
+				// 获取一个数据库连接
 				Connection newCon = obtainDataSource().getConnection();
 				if (logger.isDebugEnabled()) {
 					logger.debug("Acquired Connection [" + newCon + "] for JDBC transaction");
 				}
+				// 将数据库连接丢到一个ConnectionHolder中，放到txObject中，
+				// 注意第2个参数是true，表示第一个参数的ConnectionHolder是新创建的
 				txObject.setConnectionHolder(new ConnectionHolder(newCon), true);
 			}
 
 			txObject.getConnectionHolder().setSynchronizedWithTransaction(true);
+			// 获取连接
 			con = txObject.getConnectionHolder().getConnection();
 
+			//获取隔离级别
 			Integer previousIsolationLevel = DataSourceUtils.prepareConnectionForTransaction(con, definition);
+			//设置隔离级别
 			txObject.setPreviousIsolationLevel(previousIsolationLevel);
+			// 设置是否只读
 			txObject.setReadOnly(definition.isReadOnly());
 
-			// Switch to manual commit if necessary. This is very expensive in some JDBC drivers,
-			// so we don't want to do it unnecessarily (for example if we've explicitly
-			// configured the connection pool to set it already).
+			//判断连接是否是自动提交的，如果是自动提交的将其置为手动提交
 			if (con.getAutoCommit()) {
+				//在txObject中存储一下连接自动提交老的值，用于在事务执行完毕之后，还原一下Connection的autoCommit的值
 				txObject.setMustRestoreAutoCommit(true);
 				if (logger.isDebugEnabled()) {
 					logger.debug("Switching JDBC Connection [" + con + "] to manual commit");
 				}
+				//设置手动提交
 				con.setAutoCommit(false);
 			}
 
+			//准备事务连接
 			prepareTransactionalConnection(con, definition);
+			//设置事务活动开启
 			txObject.getConnectionHolder().setTransactionActive(true);
 
+			//根据事务定义信息获取事务超时时间
 			int timeout = determineTimeout(definition);
 			if (timeout != TransactionDefinition.TIMEOUT_DEFAULT) {
+				//设置连接的超时时间
 				txObject.getConnectionHolder().setTimeoutInSeconds(timeout);
 			}
 

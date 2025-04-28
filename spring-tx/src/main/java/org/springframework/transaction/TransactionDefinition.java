@@ -41,6 +41,7 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.transaction.support.DefaultTransactionDefinition
  * @see org.springframework.transaction.interceptor.TransactionAttribute
  */
+// 事务属性信息
 public interface TransactionDefinition {
 
 	/**
@@ -140,6 +141,7 @@ public interface TransactionDefinition {
 
 
 	/**
+	 * 默认隔离级别
 	 * Use the default isolation level of the underlying datastore.
 	 * <p>All other levels correspond to the JDBC isolation levels.
 	 * @see java.sql.Connection
@@ -147,6 +149,7 @@ public interface TransactionDefinition {
 	int ISOLATION_DEFAULT = -1;
 
 	/**
+	 * 读未提交
 	 * Indicates that dirty reads, non-repeatable reads, and phantom reads
 	 * can occur.
 	 * <p>This level allows a row changed by one transaction to be read by another
@@ -158,6 +161,7 @@ public interface TransactionDefinition {
 	int ISOLATION_READ_UNCOMMITTED = 1;  // same as java.sql.Connection.TRANSACTION_READ_UNCOMMITTED;
 
 	/**
+	 * 读已提交
 	 * Indicates that dirty reads are prevented; non-repeatable reads and
 	 * phantom reads can occur.
 	 * <p>This level only prohibits a transaction from reading a row with uncommitted
@@ -167,6 +171,7 @@ public interface TransactionDefinition {
 	int ISOLATION_READ_COMMITTED = 2;  // same as java.sql.Connection.TRANSACTION_READ_COMMITTED;
 
 	/**
+	 * 可重复读
 	 * Indicates that dirty reads and non-repeatable reads are prevented;
 	 * phantom reads can occur.
 	 * <p>This level prohibits a transaction from reading a row with uncommitted changes
@@ -178,6 +183,7 @@ public interface TransactionDefinition {
 	int ISOLATION_REPEATABLE_READ = 4;  // same as java.sql.Connection.TRANSACTION_REPEATABLE_READ;
 
 	/**
+	 * 序列化
 	 * Indicates that dirty reads, non-repeatable reads, and phantom reads
 	 * are prevented.
 	 * <p>This level includes the prohibitions in {@link #ISOLATION_REPEATABLE_READ}
@@ -192,6 +198,7 @@ public interface TransactionDefinition {
 
 
 	/**
+	 * 默认超时时间
 	 * Use the default timeout of the underlying transaction system,
 	 * or none if timeouts are not supported.
 	 */
@@ -246,7 +253,7 @@ public interface TransactionDefinition {
 	 * <p>The default is {@link #TIMEOUT_DEFAULT}.
 	 * @return the transaction timeout
 	 */
-	// 超时时间
+	// 超时时间（秒）
 	default int getTimeout() {
 		return TIMEOUT_DEFAULT;
 	}
@@ -274,6 +281,7 @@ public interface TransactionDefinition {
 	}
 
 	/**
+	 * 获取事务名称
 	 * Return the name of this transaction. Can be {@code null}.
 	 * <p>This will be used as the transaction name to be shown in a
 	 * transaction monitor, if applicable.
@@ -292,6 +300,7 @@ public interface TransactionDefinition {
 	// Static builder methods
 
 	/**
+	 * 获取默认的事务定义信息
 	 * Return an unmodifiable {@code TransactionDefinition} with defaults.
 	 * <p>For customization purposes, use the modifiable
 	 * {@link org.springframework.transaction.support.DefaultTransactionDefinition}
