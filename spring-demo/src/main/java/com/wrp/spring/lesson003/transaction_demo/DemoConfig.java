@@ -1,4 +1,4 @@
-package com.wrp.spring.lesson003.transaction.demo;
+package com.wrp.spring.lesson003.transaction_demo;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

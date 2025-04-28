@@ -1,7 +1,7 @@
 package com.wrp.spring.lesson003.transaction;
 
-import com.wrp.spring.lesson003.transaction.demo.DemoConfig;
-import com.wrp.spring.lesson003.transaction.demo.UserServiceImpl;
+import com.wrp.spring.lesson003.transaction_demo.DemoConfig;
+import com.wrp.spring.lesson003.transaction_demo.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;

@@ -71,6 +71,7 @@ import org.springframework.util.Assert;
  * @see org.springframework.jdbc.datasource.DataSourceTransactionManager
  * @see org.springframework.jdbc.datasource.DataSourceUtils#getConnection
  */
+// 事务同步管理器
 public abstract class TransactionSynchronizationManager {
 
 	private static final ThreadLocal<Map<Object, Object>> resources =

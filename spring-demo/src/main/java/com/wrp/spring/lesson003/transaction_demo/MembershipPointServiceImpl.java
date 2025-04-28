@@ -1,4 +1,4 @@
-package com.wrp.spring.lesson003.transaction.demo;
+package com.wrp.spring.lesson003.transaction_demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
