@@ -30,5 +30,27 @@ public class Service2 {
 		this.jdbcTemplate.update("insert into public.user2(name) VALUES (?)", name);
 		throw new RuntimeException();
 	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void requires_new(String name) {
+		this.jdbcTemplate.update("insert into public.user2(name) VALUES (?)", name);
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void requires_new_exception(String name) {
+		this.jdbcTemplate.update("insert into public.user2(name) VALUES (?)", name);
+		throw new RuntimeException();
+	}
+
+	@Transactional(propagation = Propagation.NESTED)
+	public void nested(String name) {
+		this.jdbcTemplate.update("insert into public.user2(name) VALUES (?)", name);
+	}
+
+	@Transactional(propagation = Propagation.NESTED)
+	public void nested_exception(String name) {
+		this.jdbcTemplate.update("insert into public.user2(name) VALUES (?)", name);
+		throw new RuntimeException();
+	}
 }
 

@@ -55,4 +55,54 @@ public class PropagationTest {
 	public void transaction_required_required_exception_try() {
 		txService.transaction_required_required_exception_try();
 	}
+
+	@Test
+	public void notransaction_exception_requiresNew_requiresNew() {
+		txService.notransaction_exception_requiresNew_requiresNew();
+	}
+
+	@Test
+	public void notransaction_requiresNew_requiresNew_exception() {
+		txService.notransaction_requiresNew_requiresNew_exception();
+	}
+
+	@Test
+	public void transaction_exception_required_requiresNew_requiresNew() {
+		txService.transaction_exception_required_requiresNew_requiresNew();
+	}
+
+	@Test
+	public void transaction_required_requiresNew_requiresNew_exception() {
+		txService.transaction_required_requiresNew_requiresNew_exception();
+	}
+
+	@Test
+	public void transaction_required_requiresNew_requiresNew_exception_try() {
+		txService.transaction_required_requiresNew_requiresNew_exception_try();
+	}
+
+	@Test
+	public void notransaction_exception_nested_nested() {
+		txService.notransaction_exception_nested_nested();
+	}
+
+	@Test
+	public void notransaction_nested_nested_exception() {
+		txService.notransaction_nested_nested_exception();
+	}
+
+	@Test
+	public void transaction_exception_nested_nested() {
+		txService.transaction_exception_nested_nested();
+	}
+
+	@Test
+	public void transaction_nested_nested_exception() {
+		txService.transaction_nested_nested_exception();
+	}
+
+	@Test
+	public void transaction_nested_nested_exception_try() {
+		txService.transaction_nested_nested_exception_try();
+	}
 }
