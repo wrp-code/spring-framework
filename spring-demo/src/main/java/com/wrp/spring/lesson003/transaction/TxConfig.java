@@ -28,7 +28,7 @@ public class TxConfig {
 		Class.forName("org.postgresql.Driver");
 		return new DriverManagerDataSource("jdbc:postgresql://127.0.0.1:5432/test",
 				"postgres",
-				"123456");
+				"wrp@PGatSMGI0601");
 	}
 
 	@Bean

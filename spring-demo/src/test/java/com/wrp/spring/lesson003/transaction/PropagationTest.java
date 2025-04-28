@@ -105,4 +105,105 @@ public class PropagationTest {
 	public void transaction_nested_nested_exception_try() {
 		txService.transaction_nested_nested_exception_try();
 	}
+
+	@Test
+	public void notransaction_exception_supports_supports() {
+		txService.notransaction_exception_supports_supports();
+	}
+
+	@Test
+	public void notransaction_supports_supports_exception() {
+		txService.notransaction_supports_supports_exception();
+	}
+
+	@Test
+	public void transaction_exception_supports_supports() {
+		txService.transaction_exception_supports_supports();
+	}
+
+	@Test
+	public void transaction_supports_supports_exception() {
+		txService.transaction_supports_supports_exception();
+	}
+
+	@Test
+	public void transaction_supports_supports_exception_try() {
+		txService.transaction_supports_supports_exception_try();
+	}
+
+	@Test
+	public void notransaction_exception_mandatory_mandatory() {
+		txService.notransaction_exception_mandatory_mandatory();
+	}
+
+	@Test
+	public void notransaction_mandatory_mandatory_exception() {
+		txService.notransaction_mandatory_mandatory_exception();
+	}
+
+	@Test
+	public void transaction_exception_mandatory_mandatory() {
+		txService.transaction_exception_mandatory_mandatory();
+	}
+
+	@Test
+	public void transaction_mandatory_mandatory_exception() {
+		txService.transaction_mandatory_mandatory_exception();
+	}
+
+	@Test
+	public void transaction_mandatory_mandatory_exception_try() {
+		txService.transaction_mandatory_mandatory_exception_try();
+	}
+
+	@Test
+	public void notransaction_exception_not_supported_not_supported() {
+		txService.notransaction_exception_not_supported_not_supported();
+	}
+
+	@Test
+	public void notransaction_not_supported_not_supported_exception() {
+		txService.notransaction_not_supported_not_supported_exception();
+	}
+
+	@Test
+	public void transaction_exception_not_supported_not_supported() {
+		txService.transaction_exception_not_supported_not_supported();
+	}
+
+	@Test
+	public void transaction_not_supported_not_supported_exception() {
+		txService.transaction_not_supported_not_supported_exception();
+	}
+
+	@Test
+	public void transaction_not_supported_not_supported_exception_try() {
+		txService.transaction_not_supported_not_supported_exception_try();
+	}
+
+	@Test
+	public void notransaction_exception_never_never() {
+		txService.notransaction_exception_never_never();
+	}
+
+	@Test
+	public void notransaction_never_never_exception() {
+		txService.notransaction_never_never_exception();
+	}
+
+	@Test
+	public void transaction_exception_never_never() {
+		txService.transaction_exception_never_never();
+	}
+
+	@Test
+	public void transaction_never_never_exception() {
+		txService.transaction_never_never_exception();
+	}
+
+	@Test
+	public void transaction_never_never_exception_try() {
+		txService.transaction_never_never_exception_try();
+	}
+
 }
