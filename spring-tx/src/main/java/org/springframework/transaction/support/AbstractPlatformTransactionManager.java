@@ -586,6 +586,7 @@ public abstract class AbstractPlatformTransactionManager
 	 * Initialize transaction synchronization as appropriate.
 	 */
 	protected void prepareSynchronization(DefaultTransactionStatus status, TransactionDefinition definition) {
+		//如果是一个新的事务，status.isNewSynchronization()将返回true
 		if (status.isNewSynchronization()) {
 			TransactionSynchronizationManager.setActualTransactionActive(status.hasTransaction());
 			TransactionSynchronizationManager.setCurrentTransactionIsolationLevel(
@@ -593,6 +594,7 @@ public abstract class AbstractPlatformTransactionManager
 							definition.getIsolationLevel() : null);
 			TransactionSynchronizationManager.setCurrentTransactionReadOnly(definition.isReadOnly());
 			TransactionSynchronizationManager.setCurrentTransactionName(definition.getName());
+			// 初始化事务同步
 			TransactionSynchronizationManager.initSynchronization();
 		}
 	}

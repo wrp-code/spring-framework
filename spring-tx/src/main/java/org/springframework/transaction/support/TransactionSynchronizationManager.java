@@ -261,6 +261,7 @@ public abstract class TransactionSynchronizationManager {
 	 * @throws IllegalStateException if synchronization is already active
 	 */
 	public static void initSynchronization() throws IllegalStateException {
+		//获取同步是否启动，新事务第一次进来synchronizations.get()是null，所以这个方法返回的是false
 		if (isSynchronizationActive()) {
 			throw new IllegalStateException("Cannot activate transaction synchronization - already active");
 		}
