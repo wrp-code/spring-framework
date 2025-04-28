@@ -16,11 +16,11 @@
 
 package org.springframework.transaction.interceptor;
 
+import org.springframework.lang.Nullable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.lang.Nullable;
 
 /**
  * TransactionAttribute implementation that works out whether a given exception
@@ -35,7 +35,7 @@ import org.springframework.lang.Nullable;
  * @since 09.04.2003
  * @see TransactionAttributeEditor
  */
-// 声明式
+// 声明式事务中使用
 @SuppressWarnings("serial")
 public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute implements Serializable {
 
@@ -126,6 +126,8 @@ public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute i
 		RollbackRuleAttribute winner = null;
 		int deepest = Integer.MAX_VALUE;
 
+		//@Transactional中可以通过rollbackFor指定需要回滚的异常列表，通过noRollbackFor属性指定不需要回滚的异常
+		//根据@Transactional中指定的回滚规则判断ex类型的异常是否需要回滚
 		if (this.rollbackRules != null) {
 			for (RollbackRuleAttribute rule : this.rollbackRules) {
 				int depth = rule.getDepth(ex);
@@ -138,9 +140,11 @@ public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute i
 
 		// User superclass behavior (rollback on unchecked) if no rule matches.
 		if (winner == null) {
+			// 默认当RuntimeException 或者 Error时回滚
 			return super.rollbackOn(ex);
 		}
 
+		// RollbackRuleAttribute时回滚
 		return !(winner instanceof NoRollbackRuleAttribute);
 	}
 

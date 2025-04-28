@@ -16,8 +16,6 @@
 
 package org.springframework.transaction.annotation;
 
-import java.util.Collection;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +31,8 @@ import org.springframework.transaction.event.TransactionalEventListenerFactory;
 import org.springframework.transaction.interceptor.RollbackRuleAttribute;
 import org.springframework.transaction.interceptor.TransactionAttributeSource;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Collection;
 
 /**
  * Abstract base {@code @Configuration} class providing common structure for enabling
@@ -84,8 +84,10 @@ public abstract class AbstractTransactionManagementConfiguration implements Impo
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public TransactionAttributeSource transactionAttributeSource() {
 		// Accept protected @Transactional methods on CGLIB proxies, as of 6.0
+		// 默认使用AnnotationTransactionAttributeSource对@Transactional进行解析。
 		AnnotationTransactionAttributeSource tas = new AnnotationTransactionAttributeSource(false);
-		// Apply default rollback rule, as of 6.2
+		// Apply default rollback rule, as of 6.2 ，
+		// 6.2 开始，Exception异常成为了默认回滚异常
 		if (this.enableTx != null && this.enableTx.getEnum("rollbackOn") == RollbackOn.ALL_EXCEPTIONS) {
 			tas.addDefaultRollbackRule(RollbackRuleAttribute.ROLLBACK_ON_ALL_EXCEPTIONS);
 		}

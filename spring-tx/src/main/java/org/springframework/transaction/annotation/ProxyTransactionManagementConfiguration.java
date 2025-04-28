@@ -36,6 +36,7 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
  * @see EnableTransactionManagement
  * @see TransactionManagementConfigurationSelector
  */
+// 最重要的是添加了拦截器TransactionInterceptor
 @Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 @ImportRuntimeHints(TransactionRuntimeHints.class)

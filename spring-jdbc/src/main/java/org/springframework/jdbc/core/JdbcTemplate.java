@@ -16,31 +16,6 @@
 
 package org.springframework.jdbc.core;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.sql.BatchUpdateException;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLWarning;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Spliterator;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import javax.sql.DataSource;
-
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.dao.support.DataAccessUtils;
@@ -58,6 +33,17 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.springframework.util.StringUtils;
+
+import javax.sql.DataSource;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.sql.*;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * <b>This is the central delegate in the JDBC core package.</b>
@@ -114,6 +100,7 @@ import org.springframework.util.StringUtils;
  * @see org.springframework.jdbc.support.SQLExceptionTranslator
  * @see org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
  */
+// 如果要让最终执行的sql受spring事务控制，那么事务管理器中datasource对象必须和jdbctemplate.datasource是同一个。
 public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 
 	private static final String RETURN_RESULT_SET_PREFIX = "#result-set-";
@@ -385,6 +372,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 	private <T> T execute(StatementCallback<T> action, boolean closeResources) throws DataAccessException {
 		Assert.notNull(action, "Callback object must not be null");
 
+		// 获取数据库连接
 		Connection con = DataSourceUtils.getConnection(obtainDataSource());
 		Statement stmt = null;
 		try {

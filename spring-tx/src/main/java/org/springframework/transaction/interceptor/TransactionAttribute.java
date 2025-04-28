@@ -16,10 +16,10 @@
 
 package org.springframework.transaction.interceptor;
 
-import java.util.Collection;
-
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.TransactionDefinition;
+
+import java.util.Collection;
 
 /**
  * This interface adds a {@code rollbackOn} specification to {@link TransactionDefinition}.
@@ -36,6 +36,7 @@ import org.springframework.transaction.TransactionDefinition;
 public interface TransactionAttribute extends TransactionDefinition {
 
 	/**
+	 * 事务管理器的bean名称
 	 * Return a qualifier value associated with this transaction attribute.
 	 * <p>This may be used for choosing a corresponding transaction manager
 	 * to process this specific transaction.
@@ -53,6 +54,7 @@ public interface TransactionAttribute extends TransactionDefinition {
 	Collection<String> getLabels();
 
 	/**
+	 * 给定的异常是否需要回滚
 	 * Should we roll back on the given exception?
 	 * @param ex the exception to evaluate
 	 * @return whether to perform a rollback or not

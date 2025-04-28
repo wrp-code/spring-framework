@@ -16,9 +16,9 @@
 
 package org.springframework.transaction.support;
 
-import java.io.Flushable;
-
 import org.springframework.core.Ordered;
+
+import java.io.Flushable;
 
 /**
  * Interface for transaction synchronization callbacks.
@@ -42,15 +42,17 @@ import org.springframework.core.Ordered;
  * @see AbstractPlatformTransactionManager
  * @see org.springframework.jdbc.datasource.DataSourceUtils#CONNECTION_SYNCHRONIZATION_ORDER
  */
+// 事务执行过程中的回调接口
+// 事务提交之前、提交之后、回滚之前、回滚之后做一些事务
 public interface TransactionSynchronization extends Ordered, Flushable {
 
-	/** Completion status in case of proper commit. */
+	/** 提交状态 */
 	int STATUS_COMMITTED = 0;
 
-	/** Completion status in case of proper rollback. */
+	/** 回滚状态 */
 	int STATUS_ROLLED_BACK = 1;
 
-	/** Completion status in case of heuristic mixed completion or system errors. */
+	/**状态未知，比如事务提交或者回滚的过程中发生了异常，那么事务的状态是未知的*/
 	int STATUS_UNKNOWN = 2;
 
 
@@ -69,6 +71,7 @@ public interface TransactionSynchronization extends Ordered, Flushable {
 	 * @see TransactionSynchronizationManager#unbindResource
 	 */
 	default void suspend() {
+		//事务被挂起的时候会调用被挂起事务中所有TransactionSynchronization的resume方法
 	}
 
 	/**
@@ -77,6 +80,7 @@ public interface TransactionSynchronization extends Ordered, Flushable {
 	 * @see TransactionSynchronizationManager#bindResource
 	 */
 	default void resume() {
+		//事务恢复的过程中会调用被恢复的事务中所有TransactionSynchronization的resume方法
 	}
 
 	/**
@@ -86,6 +90,7 @@ public interface TransactionSynchronization extends Ordered, Flushable {
 	 */
 	@Override
 	default void flush() {
+		//清理操作
 	}
 
 	/**
@@ -131,6 +136,7 @@ public interface TransactionSynchronization extends Ordered, Flushable {
 	 * @see #beforeCompletion
 	 */
 	default void beforeCommit(boolean readOnly) {
+		//事务提交之前调用
 	}
 
 	/**
@@ -145,6 +151,7 @@ public interface TransactionSynchronization extends Ordered, Flushable {
 	 * @see #afterCompletion
 	 */
 	default void beforeCompletion() {
+		//事务提交或者回滚之前调用
 	}
 
 	/**
@@ -163,6 +170,7 @@ public interface TransactionSynchronization extends Ordered, Flushable {
 	 * (note: do not throw TransactionException subclasses here!)
 	 */
 	default void afterCommit() {
+		//事务commit之后调用
 	}
 
 	/**
@@ -184,6 +192,7 @@ public interface TransactionSynchronization extends Ordered, Flushable {
 	 * @see #beforeCompletion
 	 */
 	default void afterCompletion(int status) {
+		//事务完成之后调用
 	}
 
 }
