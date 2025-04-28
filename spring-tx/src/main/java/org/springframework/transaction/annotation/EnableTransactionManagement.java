@@ -157,6 +157,19 @@ import java.lang.annotation.*;
 @Documented
 @Import(TransactionManagementConfigurationSelector.class)
 public @interface EnableTransactionManagement {
+	/**
+	 * 事务失效的情况：
+	 * 1. 未启用spring事务管理功能 @EnableTransactionManagement
+	 * 2. 方法不是public类型的 ？？？？
+	 * 3. 数据源未配置事务管理器
+	 * 4. 非代理对象访问方法 m1中调用带事务的m2 ？？？
+	 * 5. 异常类型错误(RuntimeException和Error的情况下，spring事务才会回滚。)
+	 * 6. 异常被吞了, 事务方法感知不到异常
+	 * 7. 业务和spring事务代码必须在一个线程中（事务同步管理器使用ThreadLocal存储的事务信息）
+	 *
+	 */
+
+
 
 	/**
 	 * Indicate whether subclass-based (CGLIB) proxies are to be created ({@code true})

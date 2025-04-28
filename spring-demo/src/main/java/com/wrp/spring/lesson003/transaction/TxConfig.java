@@ -3,6 +3,7 @@ package com.wrp.spring.lesson003.transaction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -16,6 +17,7 @@ import javax.sql.DataSource;
  * @author wrp
  * @since 2025-04-27 20:58
  **/
+@EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @ComponentScan
 @Configuration
 // 开启声明式事务
@@ -28,7 +30,7 @@ public class TxConfig {
 		Class.forName("org.postgresql.Driver");
 		return new DriverManagerDataSource("jdbc:postgresql://127.0.0.1:5432/test",
 				"postgres",
-				"wrp@PGatSMGI0601");
+				"123456");
 	}
 
 	@Bean
