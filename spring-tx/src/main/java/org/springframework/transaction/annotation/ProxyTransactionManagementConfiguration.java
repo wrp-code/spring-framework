@@ -51,6 +51,7 @@ public class ProxyTransactionManagementConfiguration extends AbstractTransaction
 		advisor.setTransactionAttributeSource(transactionAttributeSource);
 		advisor.setAdvice(transactionInterceptor);
 		if (this.enableTx != null) {
+			// 设置拦截器顺序
 			advisor.setOrder(this.enableTx.<Integer>getNumber("order"));
 		}
 		return advisor;
