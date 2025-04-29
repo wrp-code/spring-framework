@@ -1071,7 +1071,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		this.mainThreadPrefix = getThreadNamePrefix();
 		try {
 			for (String beanName : beanNames) {
+				// 合并BeanDefinition
 				RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
+				// 实例化Bean（部分 backgroundInit = true的Bean使用异步）
 				if (!mbd.isAbstract() && mbd.isSingleton()) {
 					CompletableFuture<?> future = preInstantiateSingleton(beanName, mbd);
 					if (future != null) {
@@ -1098,6 +1100,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		// Trigger post-initialization callback for all applicable beans...
 		for (String beanName : beanNames) {
 			Object singletonInstance = getSingleton(beanName, false);
+			// 调用其afterSingletonsInstantiated()方法
 			if (singletonInstance instanceof SmartInitializingSingleton smartSingleton) {
 				StartupStep smartInitialize = getApplicationStartup().start("spring.beans.smart-initialize")
 						.tag("beanName", beanName);
@@ -1139,6 +1142,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		if (!mbd.isLazyInit()) {
 			try {
+				//
 				instantiateSingleton(beanName);
 			}
 			catch (BeanCurrentlyInCreationException ex) {
