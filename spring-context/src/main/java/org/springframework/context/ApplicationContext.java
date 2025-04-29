@@ -60,6 +60,39 @@ public interface ApplicationContext extends EnvironmentCapable, ListableBeanFact
 		MessageSource, ApplicationEventPublisher, ResourcePatternResolver {
 
 	/**
+	 * 应用上下文生命周期14个阶段
+	 * 1、创建spring应用上下文
+	 *
+	 * 2、上下文启动准备阶段
+	 *
+	 * 3、BeanFactory创建阶段
+	 *
+	 * 4、BeanFactory准备阶段
+	 *
+	 * 5、BeanFactory后置处理阶段
+	 *
+	 * 6、BeanFactory注册BeanPostProcessor阶段
+	 *
+	 * 7、初始化内建Bean：MessageSource
+	 *
+	 * 8、初始化内建Bean：Spring事件广播器
+	 *
+	 * 9、Spring应用上下文刷新阶段
+	 *
+	 * 10、Spring事件监听器注册阶段
+	 *
+	 * 11、单例bean实例化阶段
+	 *
+	 * 12、BeanFactory初始化完成阶段
+	 *
+	 * 13、Spring应用上下文启动完成阶段
+	 *
+	 * 14、Spring应用上下文关闭阶段
+	 */
+
+
+
+	/**
 	 * Return the unique id of this application context.
 	 * @return the unique id of the context, or {@code null} if none
 	 */
