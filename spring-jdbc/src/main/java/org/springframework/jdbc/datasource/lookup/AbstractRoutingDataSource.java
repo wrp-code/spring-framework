@@ -43,7 +43,7 @@ import org.springframework.util.CollectionUtils;
  * @see #determineCurrentLookupKey()
  */
 public abstract class AbstractRoutingDataSource extends AbstractDataSource implements InitializingBean {
-
+	// 配置多个数据源，由开发者决定路由到哪个数据源
 	@Nullable
 	private Map<Object, Object> targetDataSources;
 
@@ -265,6 +265,7 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource imple
 	}
 
 	/**
+	 * 返回值作为key找到对应数据源
 	 * Determine the current lookup key. This will typically be
 	 * implemented to check a thread-bound transaction context.
 	 * <p>Allows for arbitrary keys. The returned key needs
