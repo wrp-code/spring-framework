@@ -558,46 +558,58 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			StartupStep contextRefresh = this.applicationStartup.start("spring.context.refresh");
 
 			// Prepare this context for refreshing.
+			// context生命周期阶段2：Spring应用上下文启动准备阶段
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
+			// context生命周期阶段3：BeanFactory创建阶段
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
+			// context生命周期阶段4：BeanFactory准备阶段
 			prepareBeanFactory(beanFactory);
 
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
+				// context生命周期阶段5：BeanFactory后置处理阶段
 				postProcessBeanFactory(beanFactory);
 
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
 				// Invoke factory processors registered as beans in the context.
 				// // 对应阶段1和阶段2：调用上下文中注册为bean的工厂处理器，
 				// BeanFactoryPostProcessor和BeanDefinitionRegistryPostProcessor
+				// context生命周期阶段6：BeanFactory注册BeanPostProcessor阶段
 				invokeBeanFactoryPostProcessors(beanFactory);
 				// Register bean processors that intercept bean creation.
 				// 对应阶段3：注册拦截bean创建的bean处理器，即注册BeanPostProcessor
+				// 阶段7：注册BeanPostProcessor
 				registerBeanPostProcessors(beanFactory);
 				beanPostProcess.end();
 
 				// Initialize message source for this context.
 				// 初始化国际化
+				// 阶段8：初始化内建Bean：MessageSource
 				initMessageSource();
 
 				// Initialize event multicaster for this context.
+				// 阶段9：初始化内建Bean：Spring事件广播器
 				initApplicationEventMulticaster();
 
 				// Initialize other special beans in specific context subclasses.
+				// 阶段10：Spring应用上下文刷新阶段，由子类实现
 				onRefresh();
 
 				// Check for listener beans and register them.
+				// 阶段11：Spring事件监听器注册阶段
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
 				// 对应阶段3：实例化所有剩余的（非延迟初始化）单例。
+				// 阶段12：实例化所有剩余的（非lazy init）单例。
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
+				// 阶段13：刷新完成阶段
 				finishRefresh();
 			}
 
