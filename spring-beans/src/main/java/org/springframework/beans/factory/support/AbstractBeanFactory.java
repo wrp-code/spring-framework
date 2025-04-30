@@ -1546,6 +1546,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			if (mbd.hasBeanClass()) {
 				return mbd.getBeanClass();
 			}
+			// 这个字段是bean的类名的时候，就需要通过类加载器将其转换为一个Class对象
 			Class<?> beanClass = doResolveBeanClass(mbd, typesToMatch);
 			if (mbd.hasBeanClass()) {
 				mbd.prepareMethodOverrides();

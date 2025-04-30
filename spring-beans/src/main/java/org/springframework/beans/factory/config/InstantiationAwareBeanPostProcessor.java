@@ -89,6 +89,7 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	 */
 	default boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
 		// 实例化后处理， 返回false，会跳过属性赋值前阶段和属性赋值阶段
+		// 可以自定义属性赋值
 		return true;
 	}
 
@@ -107,7 +108,8 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	@Nullable
 	default PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName)
 			throws BeansException {
-		// 属性赋值前阶段，可以调整赋的值AutowiredAnnotationBeanPostProcessor、CommonAnnotationBeanPostProcessor
+		// 属性赋值前阶段，可以调整赋的值 重要的实现类，AutowiredAnnotationBeanPostProcessor、CommonAnnotationBeanPostProcessor
+		// 返回空时，直接跳出属性赋值阶段
 		return pvs;
 	}
 

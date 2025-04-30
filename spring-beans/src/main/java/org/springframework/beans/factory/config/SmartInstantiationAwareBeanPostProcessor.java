@@ -78,7 +78,7 @@ public interface SmartInstantiationAwareBeanPostProcessor extends InstantiationA
 	@Nullable
 	default Constructor<?>[] determineCandidateConstructors(Class<?> beanClass, String beanName)
 			throws BeansException {
-		// 探测候选的构造器
+		// 探测候选的构造器，如AutowiredAnnotationBeanPostProcessor
 		return null;
 	}
 

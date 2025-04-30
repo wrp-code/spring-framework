@@ -38,6 +38,12 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 public interface MergedBeanDefinitionPostProcessor extends BeanPostProcessor {
 
 	/**
+	 * 比较重要的2个实现类
+	 * AutowiredAnnotationBeanPostProcessor：
+	 * 		postProcessMergedBeanDefinition 方法中对 @Autowired、@Value 标注的方法、字段进行缓存
+	 * CommonAnnotationBeanPostProcessor：
+	 * 		postProcessMergedBeanDefinition 方法中对 @Resource 标注的字段、@Resource 标注的方法、 @PostConstruct 标注的字段、 @PreDestroy标注的方法进行缓存
+	 *
 	 * Post-process the given merged bean definition for the specified bean.
 	 * @param beanDefinition the merged bean definition for the bean
 	 * @param beanType the actual type of the managed bean instance
