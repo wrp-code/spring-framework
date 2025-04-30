@@ -72,7 +72,7 @@ public interface BeanPostProcessor {
 	 */
 	@Nullable
 	default Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		// 初始化前
+		// 初始化前， ApplicationContextAwareProcessor和CommonAnnotationBeanPostProcessor
 		return bean;
 	}
 

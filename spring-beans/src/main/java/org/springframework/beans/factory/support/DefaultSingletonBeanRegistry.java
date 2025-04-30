@@ -752,6 +752,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		synchronized (this.disposableBeans) {
 			disposableBean = this.disposableBeans.remove(beanName);
 		}
+		// 销毁bean
 		destroyBean(beanName, disposableBean);
 
 		// destroySingletons() removes all singleton instances at the end,
@@ -802,6 +803,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		// Actually destroy the bean now...
 		if (bean != null) {
 			try {
+				// DisposableBean.destroy
 				bean.destroy();
 			}
 			catch (Throwable ex) {

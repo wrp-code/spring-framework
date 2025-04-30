@@ -296,6 +296,7 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 
 			ReflectionUtils.doWithLocalMethods(currentClass, method -> {
 				for (Class<? extends Annotation> initAnnotationType : this.initAnnotationTypes) {
+					// 方法存在@PostContrust注解
 					if (initAnnotationType != null && method.isAnnotationPresent(initAnnotationType)) {
 						currInitMethods.add(new LifecycleMethod(method, beanClass));
 						if (logger.isTraceEnabled()) {
@@ -304,6 +305,7 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 					}
 				}
 				for (Class<? extends Annotation> destroyAnnotationType : this.destroyAnnotationTypes) {
+					// 方法存在@PreDesdroy注解
 					if (destroyAnnotationType != null && method.isAnnotationPresent(destroyAnnotationType)) {
 						currDestroyMethods.add(new LifecycleMethod(method, beanClass));
 						if (logger.isTraceEnabled()) {
