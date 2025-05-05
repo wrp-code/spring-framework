@@ -4,10 +4,6 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
 
-	<bean class="com.wrp.spring.framework.User">
-		<property name="name" value="wrp"/>
-		<property name="innerUser">
-			<bean class="com.wrp.spring.framework.User"/>
-		</property>
-	</bean>
+<!--	方法4：FactoryBean方法-->
+	<bean id="userFactoryBean" class="com.wrp.spring.framework.beandefinition.UserFactoryBean"/>
 </beans>

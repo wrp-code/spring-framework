@@ -1,5 +1,6 @@
 package com.wrp.spring.framework.beandefinition;
 
+import com.wrp.spring.framework.User;
 import org.springframework.beans.factory.FactoryBean;
 
 /**

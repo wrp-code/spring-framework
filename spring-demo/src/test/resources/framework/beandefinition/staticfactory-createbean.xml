@@ -4,10 +4,7 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
 
-	<bean class="com.wrp.spring.framework.User">
-		<property name="name" value="wrp"/>
-		<property name="innerUser">
-			<bean class="com.wrp.spring.framework.User"/>
-		</property>
-	</bean>
+<!--	方式2：静态工厂方法-->
+	<bean id="staticUserFactory" class="com.wrp.spring.framework.beandefinition.StaticFactory"
+		  factory-method="createUser"/>
 </beans>

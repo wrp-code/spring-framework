@@ -1,5 +1,7 @@
 package com.wrp.spring.framework.beandefinition;
 
+import com.wrp.spring.framework.User;
+
 /**
  * @author wrp
  * @since 2025-04-26 15:56

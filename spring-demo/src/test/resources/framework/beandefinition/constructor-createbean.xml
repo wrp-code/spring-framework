@@ -4,9 +4,10 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
 
+<!--	方式1：构造器-->
 	<bean id="user1" class="com.wrp.spring.framework.User"/>
-	<bean id="user2" abstract="true"/>
-	<bean id="user3" class="com.wrp.spring.framework.User" parent="user1"/>
-	<bean id="user4" class="com.wrp.spring.framework.User" parent="user2"/>
-	<bean id="user5" class="com.wrp.spring.framework.User" parent="user3"/>
+	<bean id="user2" class="com.wrp.spring.framework.User">
+		<constructor-arg name="name" value="wrp" />
+	</bean>
+
 </beans>

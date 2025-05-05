@@ -1,4 +1,4 @@
-package com.wrp.spring.framework.beandefinition;
+package com.wrp.spring.framework;
 
 import lombok.Data;
 
@@ -12,9 +12,11 @@ public class User {
 	User innerUser;
 
 	public User() {
+		System.out.println("User无参构造器");
 	}
 
 	public User(String name) {
+		System.out.println("User有参构造器");
 		this.name = name;
 	}
 }

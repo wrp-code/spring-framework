@@ -4,12 +4,12 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
 
-	<bean id="user1" class="com.wrp.spring.framework.beandefinition.User"/>
-	<bean name="user2" class="com.wrp.spring.framework.beandefinition.User"/>
-	<bean class="com.wrp.spring.framework.beandefinition.User"/>
-	<bean id="user3,user4" class="com.wrp.spring.framework.beandefinition.User"/>
-	<bean name="user4,user5;user6" class="com.wrp.spring.framework.beandefinition.User"/>
-	<bean id="user7" name="user8 user9" class="com.wrp.spring.framework.beandefinition.User"/>
+	<bean id="user1" class="com.wrp.spring.framework.User"/>
+	<bean name="user2" class="com.wrp.spring.framework.User"/>
+	<bean class="com.wrp.spring.framework.User"/>
+	<bean id="user3,user4" class="com.wrp.spring.framework.User"/>
+	<bean name="user4,user5;user6" class="com.wrp.spring.framework.User"/>
+	<bean id="user7" name="user8 user9" class="com.wrp.spring.framework.User"/>
 
 	<alias name="user1" alias="alias1"/>
 	<alias name="user7" alias="alias2"/>

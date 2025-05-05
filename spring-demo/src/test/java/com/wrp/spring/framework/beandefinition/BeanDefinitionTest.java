@@ -1,5 +1,6 @@
 package com.wrp.spring.framework.beandefinition;
 
+import com.wrp.spring.framework.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.support.*;

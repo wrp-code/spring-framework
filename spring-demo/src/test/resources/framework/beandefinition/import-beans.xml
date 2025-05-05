@@ -4,10 +4,8 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
 
-	<bean class="com.wrp.spring.framework.User">
-		<property name="name" value="wrp"/>
-		<property name="innerUser">
-			<bean class="com.wrp.spring.framework.User"/>
-		</property>
-	</bean>
+	<bean id="user-import" class="com.wrp.spring.framework.User"/>
+
+	<import resource="classpath:framework/beandefinition/import-a.xml"/>
+	<import resource="classpath:framework/beandefinition/import-b.xml"/>
 </beans>

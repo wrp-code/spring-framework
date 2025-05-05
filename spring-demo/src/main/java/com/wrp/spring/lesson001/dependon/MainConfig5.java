@@ -8,16 +8,16 @@ import org.springframework.context.annotation.Configuration;
  * @since 2025-04-21 20:32
  **/
 @Configuration
-public class MainConfig3 {
+public class MainConfig5 {
 
 	@Bean
 	public Service1 service1() {
-		return new Service1(service2());
+		return new Service1().setService2(service2());
 	}
 
 	@Bean
 	public Service2 service2() {
-		return new Service2(service3());
+		return new Service2().setService3(service3());
 	}
 
 	@Bean

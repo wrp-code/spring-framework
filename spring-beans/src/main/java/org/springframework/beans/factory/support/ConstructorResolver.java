@@ -428,6 +428,7 @@ class ConstructorResolver {
 				Method[] rawCandidates = getCandidateMethods(factoryClass, mbd);
 				for (Method candidate : rawCandidates) {
 					if ((!isStatic || isStaticCandidate(candidate, factoryClass)) && mbd.isFactoryMethod(candidate)) {
+						// (不是静态方法 || 是工厂类的静态方法) && 是工厂方法
 						candidates.add(candidate);
 					}
 				}

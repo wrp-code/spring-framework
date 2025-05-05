@@ -1,5 +1,9 @@
 package com.wrp.spring.lesson001.dependon;
 
+import lombok.Builder;
+import lombok.Data;
+import lombok.experimental.Accessors;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -7,8 +11,22 @@ import org.springframework.stereotype.Component;
  * @since 2025-04-21 20:32
  **/
 @Component
-public class Service2 {
+@Accessors(chain = true)
+@Data
+public class Service2 implements DisposableBean {
+	Service3 service3;
+
 	public Service2() {
 		System.out.println("create Service2");
+	}
+
+	public Service2(Service3 service3) {
+		System.out.println("create Service2");
+		this.service3 = service3;
+	}
+
+	@Override
+	public void destroy() throws Exception {
+		System.out.println("destroy Service2");
 	}
 }
