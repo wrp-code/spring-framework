@@ -1,9 +1,9 @@
-package com.wrp.spring.lesson001.dependon;
+package com.wrp.spring.framework.dependon;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,7 +17,7 @@ public class Service2 implements DisposableBean {
 	Service3 service3;
 
 	public Service2() {
-		System.out.println("create Service2");
+		System.out.println("create Service22");
 	}
 
 	public Service2(Service3 service3) {

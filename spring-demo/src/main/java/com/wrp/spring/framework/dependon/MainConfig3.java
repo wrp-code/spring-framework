@@ -1,4 +1,4 @@
-package com.wrp.spring.lesson001.dependon;
+package com.wrp.spring.framework.dependon;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

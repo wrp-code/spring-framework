@@ -1,11 +1,13 @@
-package com.wrp.spring.lesson001.dependon;
+package com.wrp.spring.framework.dependon;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author wrp
  * @since 2025-04-21 20:32
  **/
+@Configuration
 public class MainConfig1 {
 
 	@Bean
