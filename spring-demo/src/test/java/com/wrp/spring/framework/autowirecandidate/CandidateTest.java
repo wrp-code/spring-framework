@@ -63,4 +63,11 @@ public class CandidateTest {
 		Assertions.assertThrows(NoUniqueBeanDefinitionException.class,
 				() -> context.getBean(A.class));
 	}
+
+	@Test
+	public void test7() {
+		AnnotationConfigApplicationContext context =
+				new AnnotationConfigApplicationContext(Config7.class);
+		Assertions.assertEquals(1, context.getBean(C.class).a.size());
+	}
 }
