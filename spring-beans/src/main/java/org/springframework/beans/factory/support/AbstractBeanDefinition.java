@@ -219,6 +219,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	@Nullable
 	private MutablePropertyValues propertyValues;
 
+	// 处理Lookup-method和replace-method
 	private MethodOverrides methodOverrides = new MethodOverrides();
 
 	@Nullable
