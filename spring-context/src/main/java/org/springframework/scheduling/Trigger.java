@@ -49,6 +49,7 @@ public interface Trigger {
 	}
 
 	/**
+	 * 触发时机
 	 * Determine the next execution time according to the given trigger context.
 	 * @param triggerContext context object encapsulating last execution times
 	 * and last completion time

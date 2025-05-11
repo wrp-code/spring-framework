@@ -391,6 +391,7 @@ public class ScheduledAnnotationBeanPostProcessor
 			Set<ScheduledTask> tasks = new LinkedHashSet<>(4);
 
 			// Determine initial delay
+			// 初始化延迟
 			Duration initialDelay = toDuration(scheduled.initialDelay(), scheduled.timeUnit());
 			String initialDelayString = scheduled.initialDelayString();
 			if (StringUtils.hasText(initialDelayString)) {
@@ -495,6 +496,7 @@ public class ScheduledAnnotationBeanPostProcessor
 				tasks.add(this.registrar.scheduleOneTimeTask(new OneTimeTask(runnable, delayToUse)));
 			}
 
+			// 往scheduledTasks缓存定时任务
 			// Finally register the scheduled tasks
 			synchronized (this.scheduledTasks) {
 				Set<ScheduledTask> regTasks = this.scheduledTasks.computeIfAbsent(bean, key -> new LinkedHashSet<>(4));
@@ -523,6 +525,7 @@ public class ScheduledAnnotationBeanPostProcessor
 		}
 		Assert.isTrue(method.getParameterCount() == 0, "Only no-arg methods may be annotated with @Scheduled");
 		Method invocableMethod = AopUtils.selectInvocableMethod(method, target.getClass());
+		// 封装了Bean + 定时任务方法
 		return new ScheduledMethodRunnable(target, invocableMethod, qualifier, this.registrar::getObservationRegistry);
 	}
 
