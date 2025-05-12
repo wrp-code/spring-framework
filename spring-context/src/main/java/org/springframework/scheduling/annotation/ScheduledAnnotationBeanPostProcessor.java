@@ -93,7 +93,7 @@ import java.util.concurrent.TimeUnit;
 // 关键是实现了SmartInitializingSingleton
 public class ScheduledAnnotationBeanPostProcessor
 	// ScheduledTaskHolder 缓存了任务和任务的执行结果
-	// MergedBeanDefinitionPostProcessor 啥也没干，为什么要继承他？？
+	// MergedBeanDefinitionPostProcessor 实际上是一个BeanPostProcessor
 	// DestructionAwareBeanPostProcessor 销毁前取消任务
 	// Aware 导入EmbeddedValueResolver、BeanName、BeanFactory、ApplicationContext
 	// SmartInitializingSingleton
@@ -663,7 +663,7 @@ public class ScheduledAnnotationBeanPostProcessor
 				// their work at the same time (for example, Spring Batch's job registration).
 				finishRegistration();
 			}
-			// // ApplicationContext关闭时发布ContextClosedEvent，进行定时任务取消
+			// ApplicationContext关闭时发布ContextClosedEvent，进行定时任务取消
 			else if (event instanceof ContextClosedEvent) {
 				for (Object bean : this.manualCancellationOnContextClose) {
 					cancelScheduledTasks(bean);

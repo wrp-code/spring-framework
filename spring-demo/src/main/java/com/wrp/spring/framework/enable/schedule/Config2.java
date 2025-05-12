@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
  * @author wrp
  * @since 2025年05月12日 14:08
  **/
-@Configuration
+//@Configuration
 public class Config2 {
 
 	@Scheduled(cron = "0/1 * * * * ?")
