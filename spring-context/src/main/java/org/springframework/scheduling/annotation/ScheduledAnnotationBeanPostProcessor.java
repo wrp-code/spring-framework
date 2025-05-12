@@ -92,6 +92,13 @@ import java.util.concurrent.TimeUnit;
  */
 // 关键是实现了SmartInitializingSingleton
 public class ScheduledAnnotationBeanPostProcessor
+	// ScheduledTaskHolder 缓存了任务和任务的执行结果
+	// MergedBeanDefinitionPostProcessor 啥也没干，为什么要继承他？？
+	// DestructionAwareBeanPostProcessor 销毁前取消任务
+	// Aware 导入EmbeddedValueResolver、BeanName、BeanFactory、ApplicationContext
+	// SmartInitializingSingleton
+	// DisposableBean
+	// ApplicationListener
 		implements ScheduledTaskHolder, MergedBeanDefinitionPostProcessor, DestructionAwareBeanPostProcessor,
 		Ordered, EmbeddedValueResolverAware, BeanNameAware, BeanFactoryAware, ApplicationContextAware,
 		SmartInitializingSingleton, DisposableBean, ApplicationListener<ApplicationContextEvent> {
@@ -135,6 +142,7 @@ public class ScheduledAnnotationBeanPostProcessor
 
 	private final Set<Class<?>> nonAnnotatedClasses = ConcurrentHashMap.newKeySet(64);
 
+	// bean -> 任务集
 	private final Map<Object, Set<ScheduledTask>> scheduledTasks = new IdentityHashMap<>(16);
 
 	private final Map<Object, List<Runnable>> reactiveSubscriptions = new IdentityHashMap<>(16);
@@ -580,6 +588,7 @@ public class ScheduledAnnotationBeanPostProcessor
 
 	@Override
 	public void postProcessBeforeDestruction(Object bean, String beanName) {
+		// 取消bean关联的任务
 		cancelScheduledTasks(bean);
 		this.manualCancellationOnContextClose.remove(bean);
 	}

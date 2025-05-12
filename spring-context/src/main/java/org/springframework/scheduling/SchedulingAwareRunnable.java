@@ -34,6 +34,7 @@ import org.springframework.lang.Nullable;
 public interface SchedulingAwareRunnable extends Runnable {
 
 	/**
+	 * 是否长时间存货
 	 * Return whether the Runnable's operation is long-lived
 	 * ({@code true}) versus short-lived ({@code false}).
 	 * <p>In the former case, the task will not allocate a thread from the thread
@@ -47,6 +48,7 @@ public interface SchedulingAwareRunnable extends Runnable {
 	}
 
 	/**
+	 * 任务的标识
 	 * Return a qualifier associated with this Runnable.
 	 * <p>The default implementation returns {@code null}.
 	 * <p>May be used for custom purposes depending on the scheduler implementation.

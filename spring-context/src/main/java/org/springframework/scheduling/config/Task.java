@@ -16,11 +16,11 @@
 
 package org.springframework.scheduling.config;
 
-import java.time.Instant;
-
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.SchedulingAwareRunnable;
 import org.springframework.util.Assert;
+
+import java.time.Instant;
 
 /**
  * Holder class defining a {@code Runnable} to be executed as a task, typically at a
@@ -33,8 +33,10 @@ import org.springframework.util.Assert;
  */
 public class Task {
 
+	// 任务
 	private final Runnable runnable;
 
+	// 任务执行结果
 	private TaskExecutionOutcome lastExecutionOutcome;
 
 

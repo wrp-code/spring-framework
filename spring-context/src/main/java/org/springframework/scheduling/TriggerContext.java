@@ -16,11 +16,11 @@
 
 package org.springframework.scheduling;
 
+import org.springframework.lang.Nullable;
+
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Date;
-
-import org.springframework.lang.Nullable;
 
 /**
  * Context object encapsulating last execution times and last completion time
@@ -56,6 +56,7 @@ public interface TriggerContext {
 	}
 
 	/**
+	 * 任务上一次预计执行时间
 	 * Return the last <i>scheduled</i> execution time of the task,
 	 * or {@code null} if not scheduled before.
 	 * @since 6.0
@@ -77,6 +78,7 @@ public interface TriggerContext {
 	}
 
 	/**
+	 * 任务上一次实际执行时间
 	 * Return the last <i>actual</i> execution time of the task,
 	 * or {@code null} if not scheduled before.
 	 * @since 6.0
@@ -98,6 +100,7 @@ public interface TriggerContext {
 	}
 
 	/**
+	 * 任务上一次完成时间
 	 * Return the last completion time of the task,
 	 * or {@code null} if not scheduled before.
 	 * @since 6.0

@@ -16,11 +16,11 @@
 
 package org.springframework.scheduling.config;
 
+import org.springframework.lang.Nullable;
+
 import java.time.Instant;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
-import org.springframework.lang.Nullable;
 
 /**
  * A representation of a scheduled task at runtime,
@@ -36,8 +36,10 @@ import org.springframework.lang.Nullable;
  */
 public final class ScheduledTask {
 
+	// 任务
 	private final Task task;
 
+	// 结果
 	@Nullable
 	volatile ScheduledFuture<?> future;
 
@@ -80,6 +82,7 @@ public final class ScheduledTask {
 	}
 
 	/**
+	 * 任务下一次执行时间
 	 * Return the next scheduled execution of the task, or {@code null}
 	 * if the task has been cancelled or no new execution is scheduled.
 	 * @since 6.2

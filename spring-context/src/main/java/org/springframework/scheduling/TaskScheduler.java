@@ -16,15 +16,16 @@
 
 package org.springframework.scheduling;
 
+import org.springframework.lang.Nullable;
+
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
 
-import org.springframework.lang.Nullable;
-
 /**
+ * 任务调度程序
  * Task scheduler interface that abstracts the scheduling of
  * {@link Runnable Runnables} based on different kinds of triggers.
  *
@@ -60,6 +61,7 @@ public interface TaskScheduler {
 	}
 
 	/**
+	 * trigger调度task
 	 * Schedule the given {@link Runnable}, invoking it whenever the trigger
 	 * indicates a next execution time.
 	 * <p>Execution will end once the scheduler shuts down or the returned
@@ -79,6 +81,7 @@ public interface TaskScheduler {
 	ScheduledFuture<?> schedule(Runnable task, Trigger trigger);
 
 	/**
+	 * 指定时间调度task
 	 * Schedule the given {@link Runnable}, invoking it at the specified execution time.
 	 * <p>Execution will end once the scheduler shuts down or the returned
 	 * {@link ScheduledFuture} gets cancelled.
@@ -110,6 +113,7 @@ public interface TaskScheduler {
 	}
 
 	/**
+	 * 指定速率调度任务
 	 * Schedule the given {@link Runnable}, invoking it at the specified execution time
 	 * and subsequently with the given period.
 	 * <p>Execution will end once the scheduler shuts down or the returned
@@ -145,6 +149,7 @@ public interface TaskScheduler {
 	}
 
 	/**
+	 * 指定速率调度任务
 	 * Schedule the given {@link Runnable}, starting as soon as possible and
 	 * invoking it with the given period.
 	 * <p>Execution will end once the scheduler shuts down or the returned
@@ -176,6 +181,7 @@ public interface TaskScheduler {
 	}
 
 	/**
+	 * 指定延迟调度任务
 	 * Schedule the given {@link Runnable}, invoking it at the specified execution time
 	 * and subsequently with the given delay between the completion of one execution
 	 * and the start of the next.
@@ -214,6 +220,7 @@ public interface TaskScheduler {
 	}
 
 	/**
+	 * 指定延迟时间调度任务
 	 * Schedule the given {@link Runnable}, starting as soon as possible and invoking it with
 	 * the given delay between the completion of one execution and the start of the next.
 	 * <p>Execution will end once the scheduler shuts down or the returned

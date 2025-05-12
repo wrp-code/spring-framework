@@ -16,12 +16,13 @@
 
 package org.springframework.scheduling;
 
+import org.springframework.lang.Nullable;
+
 import java.time.Instant;
 import java.util.Date;
 
-import org.springframework.lang.Nullable;
-
 /**
+ * 触发器，指定了任务的下一次执行时间
  * Common interface for trigger objects that determine the next execution time
  * of a task that they get associated with.
  *

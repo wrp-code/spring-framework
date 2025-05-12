@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
  * @since 2025年05月11日 8:34
  */
 @Configuration
-@EnableScheduling
+@EnableScheduling // @Import(SchedulingConfiguration.class) ==> ScheduledAnnotationBeanPostProcessor
 public class Config {
 
 	@Scheduled(cron = "0/3 * * * * ?")
