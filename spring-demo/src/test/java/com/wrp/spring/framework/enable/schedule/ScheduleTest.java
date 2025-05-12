@@ -15,7 +15,7 @@ public class ScheduleTest {
 	public void test1() throws InterruptedException {
 		AnnotationConfigApplicationContext context =
 				new AnnotationConfigApplicationContext(Config.class);
-
+		System.out.println("容器启动完成！" + System.currentTimeMillis());
 		TimeUnit.MINUTES.sleep(1);
 	}
 }

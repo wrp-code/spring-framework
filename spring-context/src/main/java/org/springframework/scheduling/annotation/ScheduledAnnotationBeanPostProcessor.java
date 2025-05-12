@@ -97,8 +97,8 @@ public class ScheduledAnnotationBeanPostProcessor
 	// DestructionAwareBeanPostProcessor 销毁前取消任务
 	// Aware 导入EmbeddedValueResolver、BeanName、BeanFactory、ApplicationContext
 	// SmartInitializingSingleton
-	// DisposableBean
-	// ApplicationListener
+	// DisposableBean 销毁Bean时，取消定时任务
+	// ApplicationListener 根据ApplicationContext的生命周期进行定时任务的注册与取消
 		implements ScheduledTaskHolder, MergedBeanDefinitionPostProcessor, DestructionAwareBeanPostProcessor,
 		Ordered, EmbeddedValueResolverAware, BeanNameAware, BeanFactoryAware, ApplicationContextAware,
 		SmartInitializingSingleton, DisposableBean, ApplicationListener<ApplicationContextEvent> {
@@ -247,6 +247,7 @@ public class ScheduledAnnotationBeanPostProcessor
 		}
 
 		if (this.beanFactory instanceof ListableBeanFactory lbf) {
+			// 定时任务ScheduledTaskRegistrar的定制化
 			Map<String, SchedulingConfigurer> beans = lbf.getBeansOfType(SchedulingConfigurer.class);
 			List<SchedulingConfigurer> configurers = new ArrayList<>(beans.values());
 			AnnotationAwareOrderComparator.sort(configurers);
@@ -621,6 +622,7 @@ public class ScheduledAnnotationBeanPostProcessor
 
 	@Override
 	public void destroy() {
+		// 取消定时任务
 		synchronized (this.scheduledTasks) {
 			Collection<Set<ScheduledTask>> allTasks = this.scheduledTasks.values();
 			for (Set<ScheduledTask> tasks : allTasks) {
@@ -654,12 +656,14 @@ public class ScheduledAnnotationBeanPostProcessor
 	@Override
 	public void onApplicationEvent(ApplicationContextEvent event) {
 		if (event.getApplicationContext() == this.applicationContext) {
+			// ApplicationContext完成后会发布ContextRefreshedEvent，进行定时任务解析
 			if (event instanceof ContextRefreshedEvent) {
 				// Running in an ApplicationContext -> register tasks this late...
 				// giving other ContextRefreshedEvent listeners a chance to perform
 				// their work at the same time (for example, Spring Batch's job registration).
 				finishRegistration();
 			}
+			// // ApplicationContext关闭时发布ContextClosedEvent，进行定时任务取消
 			else if (event instanceof ContextClosedEvent) {
 				for (Object bean : this.manualCancellationOnContextClose) {
 					cancelScheduledTasks(bean);

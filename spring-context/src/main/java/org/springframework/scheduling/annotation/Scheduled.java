@@ -108,7 +108,7 @@ public @interface Scheduled {
 	 * @return an expression that can be parsed to a cron schedule
 	 * @see org.springframework.scheduling.support.CronExpression#parse(String)
 	 */
-	// 支持占位符
+	// 支持占位符,执行的方式是与fixedDelay相近的，也是会按照上一次方法结束时间开始算起
 	String cron() default "";
 
 	/**
@@ -129,7 +129,8 @@ public @interface Scheduled {
 	 * {@link #timeUnit}.
 	 * @return the period
 	 */
-	// 上一次开始执行时间点之后多长时间再执行。
+	// 按照一定的速率执行，是从上一次方法执行开始的时间算起，如果上一次方法阻塞住了，下一次也是不会执行，
+	//        但是在阻塞这段时间内累计应该执行的次数，当不再阻塞时，一下子把这些全部执行掉，而后再按照固定速率继续执行。
 	long fixedRate() default -1;
 
 	/**
@@ -164,7 +165,7 @@ public @interface Scheduled {
 	 * with {@link org.springframework.scheduling.concurrent.SimpleAsyncTaskScheduler}.
 	 * @return the delay
 	 */
-	// 上一次执行完毕时间点之后多长时间再执行
+	// 上一次执行完毕时间点之后多长时间再执行,如果上一次执行阻塞住了，直到上一次执行完并间隔给定的时间后，执行下一次。
 	long fixedDelay() default -1;
 
 	/**

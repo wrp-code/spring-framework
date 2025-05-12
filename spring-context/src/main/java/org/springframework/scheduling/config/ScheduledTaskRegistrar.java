@@ -86,15 +86,19 @@ public class ScheduledTaskRegistrar implements ScheduledTaskHolder, Initializing
 	@Nullable
 	private List<TriggerTask> triggerTasks;
 
+	// cron任务，类似fixedDelayTasks
 	@Nullable
 	private List<CronTask> cronTasks;
 
+	// 固定速率任务
 	@Nullable
 	private List<IntervalTask> fixedRateTasks;
 
+	// 固定完成时间间隔任务
 	@Nullable
 	private List<IntervalTask> fixedDelayTasks;
 
+	// 单次任务
 	@Nullable
 	private List<DelayedTask> oneTimeTasks;
 
