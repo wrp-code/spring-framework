@@ -58,4 +58,32 @@ public class Config {
 //		}
 //		System.out.println("fixedDelay = 1000, "+ System.currentTimeMillis() + " count: " + count++);
 //	}
+
+//	@Scheduled(initialDelay = 3000)
+//	public void task7() {
+//		int a = 10 /0;
+//	}
+//
+//	@Scheduled(fixedRate = 1000)
+//	public void task8() {
+//		if(count++ == 5) {
+//			throw new RuntimeException();
+//		}
+//		System.out.println("hello");
+//	}
+
+//	@Scheduled(fixedRate = 1000)
+//	private void task9() {
+//		System.out.println("hello, private");
+//	}
+//
+//	@Scheduled(fixedRate = 1000)
+//	protected void task10() {
+//		System.out.println("hello, protected");
+//	}
+//
+//	@Scheduled(fixedRate = 1000)
+//	void task11() {
+//		System.out.println("hello, default");
+//	}
 }

@@ -16,20 +16,7 @@
 
 package org.springframework.scheduling.config;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-
 import io.micrometer.observation.ObservationRegistry;
-
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.Nullable;
@@ -39,6 +26,12 @@ import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Helper bean for registering tasks with a {@link TaskScheduler}, typically using cron
@@ -102,8 +95,10 @@ public class ScheduledTaskRegistrar implements ScheduledTaskHolder, Initializing
 	@Nullable
 	private List<DelayedTask> oneTimeTasks;
 
+	// 未启动的定时任务
 	private final Map<Task, ScheduledTask> unresolvedTasks = new HashMap<>(16);
 
+	// 所有启动的定时任务
 	private final Set<ScheduledTask> scheduledTasks = new LinkedHashSet<>(16);
 
 

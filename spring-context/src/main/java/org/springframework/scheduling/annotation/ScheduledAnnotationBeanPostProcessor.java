@@ -90,13 +90,12 @@ import java.util.concurrent.TimeUnit;
  * @see org.springframework.scheduling.config.ScheduledTaskRegistrar
  * @see AsyncAnnotationBeanPostProcessor
  */
-// 关键是实现了SmartInitializingSingleton
 public class ScheduledAnnotationBeanPostProcessor
 	// ScheduledTaskHolder 缓存了任务和任务的执行结果
 	// MergedBeanDefinitionPostProcessor 实际上是一个BeanPostProcessor
 	// DestructionAwareBeanPostProcessor 销毁前取消任务
 	// Aware 导入EmbeddedValueResolver、BeanName、BeanFactory、ApplicationContext
-	// SmartInitializingSingleton
+	// SmartInitializingSingleton 在非ApplicationContext环境下生效
 	// DisposableBean 销毁Bean时，取消定时任务
 	// ApplicationListener 根据ApplicationContext的生命周期进行定时任务的注册与取消
 		implements ScheduledTaskHolder, MergedBeanDefinitionPostProcessor, DestructionAwareBeanPostProcessor,
@@ -230,7 +229,7 @@ public class ScheduledAnnotationBeanPostProcessor
 		this.nonAnnotatedClasses.clear();
 
 		if (this.applicationContext == null) {
-			// Not running in an ApplicationContext -> register tasks early...
+			// 在非ApplicationContext环境下生效
 			finishRegistration();
 		}
 	}
@@ -280,6 +279,7 @@ public class ScheduledAnnotationBeanPostProcessor
 		Class<?> targetClass = AopProxyUtils.ultimateTargetClass(bean);
 		if (!this.nonAnnotatedClasses.contains(targetClass) &&
 				AnnotationUtils.isCandidateClass(targetClass, List.of(Scheduled.class, Schedules.class))) {
+			// 收集方法上的Scheduled
 			Map<Method, Set<Scheduled>> annotatedMethods = MethodIntrospector.selectMethods(targetClass,
 					(MethodIntrospector.MetadataLookup<Set<Scheduled>>) method -> {
 						Set<Scheduled> scheduledAnnotations = AnnotatedElementUtils.getMergedRepeatableAnnotations(
@@ -293,7 +293,7 @@ public class ScheduledAnnotationBeanPostProcessor
 				}
 			}
 			else {
-				// Non-empty set of methods
+				// 遍历集合，解析定时任务
 				annotatedMethods.forEach((method, scheduledAnnotations) ->
 						scheduledAnnotations.forEach(scheduled -> processScheduled(scheduled, method, bean)));
 				if (logger.isTraceEnabled()) {
@@ -498,6 +498,7 @@ public class ScheduledAnnotationBeanPostProcessor
 				}
 			}
 
+			// 单次任务，需要指定initialDelay
 			if (!processedSchedule) {
 				if (initialDelay.isNegative()) {
 					throw new IllegalArgumentException("One-time task only supported with specified initial delay");
