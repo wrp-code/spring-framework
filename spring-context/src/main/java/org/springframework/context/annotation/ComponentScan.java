@@ -16,16 +16,11 @@
 
 package org.springframework.context.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.core.type.filter.TypeFilter;
+
+import java.lang.annotation.*;
 
 /**
  * Configures component scanning directives for use with {@link Configuration @Configuration}
@@ -144,6 +139,7 @@ public @interface ComponentScan {
 	boolean useDefaultFilters() default true;
 
 	/**
+	 * 自定义扫描哪些类
 	 * 多个Filter之间是 or 关系
 	 * Specifies which types are eligible for component scanning.
 	 * <p>Further narrows the set of candidate components from everything in {@link #basePackages}
@@ -157,6 +153,7 @@ public @interface ComponentScan {
 	Filter[] includeFilters() default {};
 
 	/**
+	 * 排除哪些类不被扫描
 	 * Specifies which types are not eligible for component scanning.
 	 * @see #resourcePattern
 	 */
