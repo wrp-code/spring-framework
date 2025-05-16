@@ -40,11 +40,11 @@ public interface MetadataReader {
 	 * 可以通过这个读想获取类的一些元数据信息，
 	 * 如类的class对象、
 	 * 是否是接口、
-	 * 是否有注解、
+	 * 是否是注解、
 	 * 是否是抽象类、
 	 * 父类名称、
 	 * 接口名称、
-	 * 内部包含的之类列表等等
+	 * 内部包含的子类列表等等
 	 * Read basic class metadata for the underlying class.
 	 */
 	ClassMetadata getClassMetadata();

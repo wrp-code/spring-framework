@@ -16,13 +16,8 @@
 
 package org.springframework.context.annotation;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.aop.framework.AopInfrastructureBean;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -40,6 +35,10 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Utilities for identifying and configuring {@link Configuration} classes.
@@ -143,12 +142,15 @@ public abstract class ConfigurationClassUtils {
 			}
 		}
 
+		// 获取Configuration注解的所有属性
 		Map<String, Object> config = metadata.getAnnotationAttributes(Configuration.class.getName());
 		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) {
+			// proxyBeanMethods = true
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
 		else if (config != null || Boolean.TRUE.equals(beanDef.getAttribute(CANDIDATE_ATTRIBUTE)) ||
 				isConfigurationCandidate(metadata)) {
+			// proxyBeanMethods = false || candidate = true || 是配置类候选
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
 		}
 		else {
@@ -179,17 +181,23 @@ public abstract class ConfigurationClassUtils {
 
 		// Any of the typical annotations found?
 		for (String indicator : candidateIndicators) {
+			// 是否标注指定注解 Set.of(
+			//			Component.class.getName(),
+			//			ComponentScan.class.getName(),
+			//			Import.class.getName(),
+			//			ImportResource.class.getName());
 			if (metadata.isAnnotated(indicator)) {
 				return true;
 			}
 		}
 
-		// Finally, let's look for @Bean methods...
+		// 是否有@Bean注解的方法
 		return hasBeanMethods(metadata);
 	}
 
 	static boolean hasBeanMethods(AnnotationMetadata metadata) {
 		try {
+			// 是否有@Bean注解的方法
 			return metadata.hasAnnotatedMethods(Bean.class.getName());
 		}
 		catch (Throwable ex) {
