@@ -50,12 +50,19 @@ import java.lang.annotation.Target;
  * @see ImportBeanDefinitionRegistrar
  * @see ImportResource
  */
+// 用在类和注解上较多
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Import {
 
 	/**
+	 * @ Configuration标注的类
+	 * ImportSelector接口 和 DeferredImportSelector接口
+	 * ImportBeanDefinitionRegistrar接口
+	 * ComponentScan注解标注的类
+	 * 普通组件类 @ Component ???
+	 * 没有标注注解的类是否可行？
 	 * {@link Configuration @Configuration}, {@link ImportSelector},
 	 * {@link ImportBeanDefinitionRegistrar}, or regular component classes to import.
 	 */

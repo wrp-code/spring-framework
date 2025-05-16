@@ -12,7 +12,8 @@ public class MyImportSelector implements ImportSelector {
 	public String[] selectImports(AnnotationMetadata importingClassMetadata) {
 		return new String[]{
 				Service1.class.getName(),
-				ConfigModule2.class.getName()
+				ConfigModule2.class.getName(),
+				Service2.class.getName()
 		};
 	}
 }

@@ -61,7 +61,7 @@ import org.springframework.lang.Nullable;
 public interface ImportSelector {
 
 	/**
-	 * 返回需要导入的全限定类名的数组，可以是任何普通类，配置类（@Configuration、@Bean、@CompontentScan等标注的类）
+	 * 返回需要导入的全限定类名的数组，可以是任何普通类，配置类（@Configuration、@Bean、@ComponentScan等标注的类）
 	 * importingClassMetadata：用来获取被@Import标注的类上面所有的注解信息
 	 * Select and return the names of which class(es) should be imported based on
 	 * the {@link AnnotationMetadata} of the importing @{@link Configuration} class.
