@@ -248,6 +248,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	}
 
 	/**
+	 * 从注册表中的配置类派生更多的bean定义。
 	 * Derive further bean definitions from the configuration classes in the registry.
 	 */
 	@Override
