@@ -139,6 +139,7 @@ class ConfigurationClassBeanDefinitionReader {
 		}
 
 		if (configClass.isImported()) {
+			// 注册当前配置类
 			registerBeanDefinitionForImportedConfigurationClass(configClass);
 		}
 		// 遍历方法，解析为BeanDefinition，并注册
@@ -146,7 +147,9 @@ class ConfigurationClassBeanDefinitionReader {
 			loadBeanDefinitionsForBeanMethod(beanMethod);
 		}
 
+		// 加载ImportedResource
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
+		// 加载ImportedBeanDefinitionRegistrar
 		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars());
 	}
 
@@ -212,6 +215,7 @@ class ConfigurationClassBeanDefinitionReader {
 			return;
 		}
 
+		// @Bean标注的方法创建ConfigurationClassBeanDefinition
 		ConfigurationClassBeanDefinition beanDef = new ConfigurationClassBeanDefinition(configClass, metadata, beanName);
 		beanDef.setSource(this.sourceExtractor.extractSource(metadata, configClass.getResource()));
 
@@ -290,6 +294,7 @@ class ConfigurationClassBeanDefinitionReader {
 			logger.trace(String.format("Registering bean definition for @Bean method %s.%s()",
 					configClass.getMetadata().getClassName(), beanName));
 		}
+		// 注册含有@Bean的方法
 		this.registry.registerBeanDefinition(beanName, beanDefToRegister);
 	}
 
