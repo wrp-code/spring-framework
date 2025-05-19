@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Import;
  * @author wrp
  * @since 2025年05月15日 11:30
  **/
-@Import(MyImportBeanDefinitionRegistrar.class)
+@Import({MyImportBeanDefinitionRegistrar.class, Config.class})
 public class DemoConfig4 {
 }

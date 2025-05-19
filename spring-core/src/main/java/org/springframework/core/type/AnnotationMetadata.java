@@ -16,13 +16,13 @@
 
 package org.springframework.core.type;
 
+import org.springframework.core.annotation.MergedAnnotation;
+import org.springframework.core.annotation.MergedAnnotations;
+
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.springframework.core.annotation.MergedAnnotation;
-import org.springframework.core.annotation.MergedAnnotations;
 
 /**
  * Interface that defines abstract access to the annotations of a specific
@@ -92,6 +92,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	}
 
 	/**
+	 * 是否有指定注解的方法
 	 * Determine whether the underlying class has any methods that are
 	 * annotated (or meta-annotated) with the given annotation type.
 	 * @param annotationName the fully-qualified class name of the annotation
@@ -102,6 +103,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	}
 
 	/**
+	 * 查询所有包含指定注解的方法元信息
 	 * Retrieve the method metadata for all methods that are annotated
 	 * (or meta-annotated) with the given annotation type.
 	 * <p>For any returned method, {@link MethodMetadata#isAnnotated} will
@@ -115,6 +117,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	Set<MethodMetadata> getAnnotatedMethods(String annotationName);
 
 	/**
+	 * 获取声明的方法
 	 * Retrieve the method metadata for all user-declared methods on the
 	 * underlying class, preserving declaration order as far as possible.
 	 * @return a set of {@link MethodMetadata}
@@ -124,6 +127,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 
 
 	/**
+	 * 获取类的注解信息
 	 * Factory method to create a new {@link AnnotationMetadata} instance
 	 * for the given class using standard reflection.
 	 * @param type the class to introspect

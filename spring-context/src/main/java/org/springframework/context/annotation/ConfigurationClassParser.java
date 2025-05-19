@@ -148,7 +148,7 @@ class ConfigurationClassParser {
 			BeanDefinition bd = holder.getBeanDefinition();
 			try {
 				ConfigurationClass configClass;
-				// @Configuration、@ComponentScan定义的配置类走这
+				// @Configuration、@ComponentScan、@Import定义的配置类走这
 				if (bd instanceof AnnotatedBeanDefinition annotatedBeanDef) {
 					configClass = parse(annotatedBeanDef, holder.getBeanName());
 				}

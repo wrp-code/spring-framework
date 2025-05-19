@@ -183,13 +183,75 @@ public interface ImportSelector {
 > 2. 指定导入的类的处理顺序（DeferredImportSelector会被排序）
 > 
 
+测试1
 
+```java
+// 导入的Bean如果名称相同，后面的会覆盖前面的
+@Import({
+       MyDeferredImportSelector.class,
+       Config1.class,
+       MyImportSelector.class
+})
+public class DemoConfig7 {
+}
+```
 
+- `MyDeferredImportSelector`放在Import数组的第一个，但是依然会被最后处理
+- Import导入的Bean如果名称相同，后面的会覆盖前面的
+- Import数组顺序执行导入
 
+测试2
+
+```java
+@Import({
+       MyDeferredImportSelector.class,
+       MyDeferredImportSelector2.class
+})
+public class DemoConfig8 {
+}
+```
+
+- MyDeferredImportSelector和MyDeferredImportSelector2均实现了Ordered接口，前者优先级更低，所有即使在Import数组前面，也会在后者后面执行。
 
 ## 2. 核心原理
 
+> `ConfigurationClassPostProcessor`处理@Import注解，ConfigurationClassPostProcessor实现了BeanDefinitionRegistryPostProcessor，参与到BeanFactory的生命周期中。内部委托`ConfigurationClassParser`，在解析过程中处理@Import
+
+```java
+protected final SourceClass doProcessConfigurationClass(
+       ConfigurationClass configClass, SourceClass sourceClass, Predicate<String> filter)
+       throws IOException {
+
+
+    // Process any @Import annotations
+    processImports(configClass, sourceClass, getImports(sourceClass), filter, true);
+
+
+
+    // Process superclass, if any
+    if (sourceClass.getMetadata().hasSuperClass()) {
+       String superclass = sourceClass.getMetadata().getSuperClassName();
+       if (superclass != null && !superclass.startsWith("java")) {
+          boolean superclassKnown = this.knownSuperclasses.containsKey(superclass);
+          this.knownSuperclasses.add(superclass, configClass);
+          if (!superclassKnown) {
+             // Superclass found, return its annotation metadata and recurse
+             // 递归解析父类
+             return sourceClass.getSuperClass();
+          }
+       }
+    }
+
+    // No superclass -> processing is complete
+    return null;
+}
+```
+
+
+
 ## 3. 源码分析
+
+
 
 
 ## 4. 总结
