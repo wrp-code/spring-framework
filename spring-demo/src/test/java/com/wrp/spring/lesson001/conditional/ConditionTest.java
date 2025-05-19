@@ -22,7 +22,7 @@ public class ConditionTest {
 
 	@Test
 	public void test2() {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(BeanConfig3.class);
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(BeanConfig2.class);
 		System.out.println(context.getBean("name"));
 	}
 

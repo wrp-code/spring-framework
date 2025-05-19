@@ -32,6 +32,7 @@ import org.springframework.lang.Nullable;
 public interface ConditionContext {
 
 	/**
+	 * 返回bean定义注册器，可以通过注册器获取bean定义的各种配置信息
 	 * Return the {@link BeanDefinitionRegistry} that will hold the bean definition
 	 * should the condition match.
 	 * @throws IllegalStateException if no registry is available (which is unusual:
