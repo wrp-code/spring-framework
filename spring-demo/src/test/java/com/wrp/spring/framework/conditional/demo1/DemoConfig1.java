@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DemoConfig1 {
 
+	@Conditional(MyCondition.class)
 	@Bean
 	public String name1() {
 		return "wrp1";

@@ -78,6 +78,7 @@ class ConditionEvaluator {
 	 * @return if the item should be skipped
 	 */
 	public boolean shouldSkip(@Nullable AnnotatedTypeMetadata metadata, @Nullable ConfigurationPhase phase) {
+		// 不包含Conditional，直接跳过
 		if (metadata == null || !metadata.isAnnotated(Conditional.class.getName())) {
 			return false;
 		}
@@ -96,6 +97,9 @@ class ConditionEvaluator {
 			if (condition instanceof ConfigurationCondition configurationCondition) {
 				requiredPhase = configurationCondition.getConfigurationPhase();
 			}
+			// requiredPhase == null，Condition接口
+			// requiredPhase == phase，ConfigurationCondition接口必须先匹配阶段
+			// matches = false时会返回true，即跳过当前指定阶段
 			if ((requiredPhase == null || requiredPhase == phase) && !condition.matches(this.context, metadata)) {
 				return true;
 			}
@@ -122,6 +126,7 @@ class ConditionEvaluator {
 				conditions.add(condition);
 			}
 		}
+		// 条件排序
 		AnnotationAwareOrderComparator.sort(conditions);
 		return conditions;
 	}
