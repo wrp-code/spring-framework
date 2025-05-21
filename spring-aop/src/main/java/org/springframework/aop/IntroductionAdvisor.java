@@ -44,6 +44,7 @@ public interface IntroductionAdvisor extends Advisor, IntroductionInfo {
 	ClassFilter getClassFilter();
 
 	/**
+	 * 校验接口是否能通过IntroductionAdvisor实现
 	 * Can the advised interfaces be implemented by the introduction advice?
 	 * Invoked before adding an IntroductionAdvisor.
 	 * @throws IllegalArgumentException if the advised interfaces can't be

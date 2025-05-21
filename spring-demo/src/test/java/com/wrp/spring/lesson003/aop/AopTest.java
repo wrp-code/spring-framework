@@ -91,6 +91,69 @@ public class AopTest {
 
 					@Override
 					public boolean isRuntime() {
+						return false;
+					}
+
+					@Override
+					public boolean matches(Method method, Class<?> targetClass, Object... args) {
+						return false;
+					}
+				};
+			}
+		};
+		//创建通知，需要拦截方法的执行，所以需要用到MethodInterceptor类型的通知
+		MethodInterceptor advice = new MethodInterceptor() {
+			@Override
+			public Object invoke(MethodInvocation invocation) throws Throwable {
+				System.out.println("准备调用:" + invocation.getMethod());
+				long starTime = System.nanoTime();
+				Object result = invocation.proceed();
+				long endTime = System.nanoTime();
+				System.out.println(invocation.getMethod() + "，调用结束！");
+				System.out.println("耗时(纳秒):" + (endTime - starTime));
+				return result;
+			}
+		};
+
+		//创建Advisor，将pointcut和advice组装起来
+		DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor(pointcut, advice);
+
+		//通过spring提供的代理创建工厂来创建代理
+		ProxyFactory proxyFactory = new ProxyFactory();
+		//为工厂指定目标对象
+		proxyFactory.setTarget(target);
+		//调用addAdvisor方法，为目标添加增强的功能，即添加Advisor，可以为目标添加很多个Advisor
+		proxyFactory.addAdvisor(advisor);
+		//通过工厂提供的方法来生成代理对象
+		UserService userServiceProxy = (UserService) proxyFactory.getProxy();
+
+		//调用代理的work方法
+		userServiceProxy.work("路人");
+	}
+
+	@Test
+	public void test3() {
+		//定义目标对象
+		UserService target = new UserService();
+		//创建pointcut，用来拦截UserService中的work方法
+		Pointcut pointcut = new Pointcut() {
+			@Override
+			public ClassFilter getClassFilter() {
+				//判断是否是UserService类型的
+				return clazz -> UserService.class.isAssignableFrom(clazz);
+			}
+
+			@Override
+			public MethodMatcher getMethodMatcher() {
+				return new MethodMatcher() {
+					@Override
+					public boolean matches(Method method, Class<?> targetClass) {
+						//判断方法名称是否是work
+						return "work".equals(method.getName());
+					}
+
+					@Override
+					public boolean isRuntime() {
 						return true; // @1：注意这个地方要返回true
 					}
 
