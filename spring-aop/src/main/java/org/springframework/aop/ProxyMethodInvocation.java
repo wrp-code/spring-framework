@@ -36,12 +36,14 @@ import org.springframework.lang.Nullable;
 public interface ProxyMethodInvocation extends MethodInvocation {
 
 	/**
+	 * 获取代理对象
 	 * Return the proxy that this method invocation was made through.
 	 * @return the original proxy object
 	 */
 	Object getProxy();
 
 	/**
+	 * 克隆MethodInvocation
 	 * Create a clone of this object. If cloning is done before {@code proceed()}
 	 * is invoked on this object, {@code proceed()} can be invoked once per clone
 	 * to invoke the joinpoint (and the rest of the advice chain) more than once.
@@ -51,6 +53,7 @@ public interface ProxyMethodInvocation extends MethodInvocation {
 	MethodInvocation invocableClone();
 
 	/**
+	 * 克隆MethodInvocation
 	 * Create a clone of this object. If cloning is done before {@code proceed()}
 	 * is invoked on this object, {@code proceed()} can be invoked once per clone
 	 * to invoke the joinpoint (and the rest of the advice chain) more than once.
@@ -62,6 +65,7 @@ public interface ProxyMethodInvocation extends MethodInvocation {
 	MethodInvocation invocableClone(Object... arguments);
 
 	/**
+	 * 设置参数，作用于后续通知
 	 * Set the arguments to be used on subsequent invocations in the any advice
 	 * in this chain.
 	 * @param arguments the argument array
@@ -69,6 +73,7 @@ public interface ProxyMethodInvocation extends MethodInvocation {
 	void setArguments(Object... arguments);
 
 	/**
+	 * 设置用户属性
 	 * Add the specified user attribute with the given value to this invocation.
 	 * <p>Such attributes are not used within the AOP framework itself. They are
 	 * just kept as part of the invocation object, for use in special interceptors.
@@ -78,6 +83,7 @@ public interface ProxyMethodInvocation extends MethodInvocation {
 	void setUserAttribute(String key, @Nullable Object value);
 
 	/**
+	 * 获取用户属性
 	 * Return the value of the specified user attribute.
 	 * @param key the name of the attribute
 	 * @return the value of the attribute, or {@code null} if not set

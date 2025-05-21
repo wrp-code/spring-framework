@@ -1,4 +1,4 @@
-## 1. 概念
+## 1. AOP概念
 
 1. `目标对象` 被增加的对象
 2. `连接点（JoinPoint）` 被拦截到的程序执行点，即方法
@@ -53,6 +53,82 @@ public interface MethodInvocation extends Invocation {
     @Nonnull
     Method getMethod();
 
+}
+```
+
+4. ProxyMethodInvocation 代理方法调用
+
+```java
+public interface ProxyMethodInvocation extends MethodInvocation {
+
+    /**
+     * 获取代理对象
+     */
+    Object getProxy();
+
+    /**
+     * 克隆MethodInvocation
+     */
+    MethodInvocation invocableClone();
+
+    /**
+     * 克隆MethodInvocation
+     */
+    MethodInvocation invocableClone(Object... arguments);
+
+    /**
+     * 设置参数，作用于后续通知
+     */
+    void setArguments(Object... arguments);
+
+    /**
+     * 设置用户属性
+     */
+    void setUserAttribute(String key, @Nullable Object value);
+
+    /**
+     * 获取用户属性
+     */
+    @Nullable
+    Object getUserAttribute(String key);
+
+}
+```
+
+5. ReflectiveMethodInvocation jdk动态代理方法调用
+
+```java
+public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Cloneable {
+
+    protected final Object proxy;
+
+    @Nullable
+    protected final Object target;
+
+    protected final Method method;
+
+    protected Object[] arguments;
+
+    @Nullable
+    private final Class<?> targetClass;
+
+    /**
+     * Lazily initialized map of user-specific attributes for this invocation.
+     */
+    @Nullable
+    private Map<String, Object> userAttributes;
+
+    /**
+     * List of MethodInterceptor and InterceptorAndDynamicMethodMatcher
+     * that need dynamic checks.
+     */
+    protected final List<?> interceptorsAndDynamicMethodMatchers;
+
+    /**
+     * Index from 0 of the current interceptor we're invoking.
+     * -1 until we invoke: then the current interceptor.
+     */
+    private int currentInterceptorIndex = -1;
 }
 ```
 
@@ -272,9 +348,9 @@ public interface IntroductionInfo {
 }
 ```
 
+## 2. AOP原理
 
-
-
+> 使用**jdk动态代理和cglib代理**来创建代理对象，通过代理对象来访问目标对象，而代理对象中融入了增强的代码，最终起到对目标对象增强的效果。
 
 
 
