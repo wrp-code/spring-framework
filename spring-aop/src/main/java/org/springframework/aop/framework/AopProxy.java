@@ -51,6 +51,7 @@ public interface AopProxy {
 	 * (or {@code null} for the low-level proxy facility's default)
 	 * @return the new proxy object (never {@code null})
 	 */
+	// 创建一个新的代理对象
 	Object getProxy(@Nullable ClassLoader classLoader);
 
 	/**
@@ -60,6 +61,7 @@ public interface AopProxy {
 	 * @return the proxy class
 	 * @since 6.0
 	 */
+	// 加载代理对象的Class
 	Class<?> getProxyClass(@Nullable ClassLoader classLoader);
 
 }

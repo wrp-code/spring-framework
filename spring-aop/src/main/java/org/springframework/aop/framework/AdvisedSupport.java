@@ -66,28 +66,30 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	public static final TargetSource EMPTY_TARGET_SOURCE = EmptyTargetSource.INSTANCE;
 
 
+	// 目标源，默认是EMPTY_TARGET_SOURCE
 	/** Package-protected to allow direct access for efficiency. */
 	TargetSource targetSource = EMPTY_TARGET_SOURCE;
 
 	/** Whether the Advisors are already filtered for the specific target class. */
-	// true，直接跳过类匹配。
+	// 是否做过预处理
 	private boolean preFiltered = false;
 
 	/** The AdvisorChainFactory to use. */
-	// 用来获取目标方法的调用链
+	// 调用链工厂，获取目标方法的调用链
 	private AdvisorChainFactory advisorChainFactory = DefaultAdvisorChainFactory.INSTANCE;
 
 	/**
 	 * Interfaces to be implemented by the proxy. Held in List to keep the order
 	 * of registration, to create JDK proxy with specified order of interfaces.
 	 */
+	// 代理对象需要实现的接口列表
 	private List<Class<?>> interfaces = new ArrayList<>();
 
 	/**
 	 * List of Advisors. If an Advice is added, it will be wrapped
 	 * in an Advisor before being added to this List.
 	 */
-	// 存储通知顾问 DefaultPointcutAdvisor
+	// 存储顾问，添加的Advice会被包装成Advisor对象， DefaultPointcutAdvisor
 	private List<Advisor> advisors = new ArrayList<>();
 
 	/**
@@ -104,6 +106,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	private transient Map<MethodCacheKey, List<Object>> methodCache;
 
 	/** Cache with shared interceptors which are not method-specific. */
+	// 缓存的顾问
 	@Nullable
 	private transient volatile List<Object> cachedInterceptors;
 
@@ -153,6 +156,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	}
 
 	/**
+	 * 设置目标类
 	 * Set a target class to be proxied, indicating that the proxy
 	 * should be castable to the given class.
 	 * <p>Internally, an {@link org.springframework.aop.target.EmptyTargetSource}
@@ -214,6 +218,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	}
 
 	/**
+	 * 添加需要实现的接口
 	 * Add a new proxied interface.
 	 * @param ifc the additional interface to proxy
 	 */
@@ -224,11 +229,13 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		}
 		if (!this.interfaces.contains(ifc)) {
 			this.interfaces.add(ifc);
+			// 清除缓存
 			adviceChanged();
 		}
 	}
 
 	/**
+	 * 移除接口
 	 * Remove a proxied interface.
 	 * <p>Does nothing if the given interface isn't proxied.
 	 * @param ifc the interface to remove from the proxy
@@ -244,6 +251,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		return ClassUtils.toClassArray(this.interfaces);
 	}
 
+	// 判断接口是否需要被代理
 	@Override
 	public boolean isInterfaceProxied(Class<?> ifc) {
 		for (Class<?> proxyIntf : this.interfaces) {
@@ -254,8 +262,10 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		return false;
 	}
 
+	// 是否有用户接口
 	boolean hasUserSuppliedInterfaces() {
 		for (Class<?> ifc : this.interfaces) {
+			// 不是SpringProxy && 不是IntroductionAdvisor引入的接口
 			if (!SpringProxy.class.isAssignableFrom(ifc) && !isAdvisorIntroducedInterface(ifc)) {
 				return true;
 			}
@@ -263,6 +273,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		return false;
 	}
 
+	// 是否有IntroductionAdvisor引入的接口
 	private boolean isAdvisorIntroducedInterface(Class<?> ifc) {
 		for (Advisor advisor : this.advisors) {
 			if (advisor instanceof IntroductionAdvisor introductionAdvisor) {
@@ -276,7 +287,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		return false;
 	}
 
-
+	// 获取顾问数组
 	@Override
 	public final Advisor[] getAdvisors() {
 		return this.advisors.toArray(new Advisor[0]);
@@ -287,20 +298,24 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		return this.advisors.size();
 	}
 
+	// 添加顾问到最后
 	@Override
 	public void addAdvisor(Advisor advisor) {
 		int pos = this.advisors.size();
 		addAdvisor(pos, advisor);
 	}
 
+	// 添加顾问到指定位置
 	@Override
 	public void addAdvisor(int pos, Advisor advisor) throws AopConfigException {
 		if (advisor instanceof IntroductionAdvisor introductionAdvisor) {
 			validateIntroductionAdvisor(introductionAdvisor);
 		}
+		// 内部方法添加顾问到指定位置
 		addAdvisorInternal(pos, advisor);
 	}
 
+	// 移除指定的顾问
 	@Override
 	public boolean removeAdvisor(Advisor advisor) {
 		int index = indexOf(advisor);
@@ -313,24 +328,30 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		}
 	}
 
+	//
 	@Override
 	public void removeAdvisor(int index) throws AopConfigException {
+		// 被冻结的配置不允许修改顾问集合
 		if (isFrozen()) {
 			throw new AopConfigException("Cannot remove Advisor: Configuration is frozen.");
 		}
+		// 检查下标是否越界
 		if (index < 0 || index > this.advisors.size() - 1) {
 			throw new AopConfigException("Advisor index " + index + " is out of bounds: " +
 					"This configuration only has " + this.advisors.size() + " advisors.");
 		}
 
+		// 移除指定的顾问
 		Advisor advisor = this.advisors.remove(index);
 		if (advisor instanceof IntroductionAdvisor introductionAdvisor) {
 			// We need to remove introduction interfaces.
 			for (Class<?> ifc : introductionAdvisor.getInterfaces()) {
+				// 移除 IntroductionAdvisor引入的接口
 				removeInterface(ifc);
 			}
 		}
 
+		// 清除缓存
 		adviceChanged();
 	}
 
@@ -340,6 +361,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		return this.advisors.indexOf(advisor);
 	}
 
+	// 替换顾问
 	@Override
 	public boolean replaceAdvisor(Advisor a, Advisor b) throws AopConfigException {
 		Assert.notNull(a, "Advisor a must not be null");
@@ -354,6 +376,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	}
 
 	/**
+	 * 批量添加顾问
 	 * Add all the given advisors to this proxy configuration.
 	 * @param advisors the advisors to register
 	 */
@@ -362,14 +385,17 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	}
 
 	/**
+	 * 批量添加顾问
 	 * Add all the given advisors to this proxy configuration.
 	 * @param advisors the advisors to register
 	 */
 	public void addAdvisors(Collection<Advisor> advisors) {
+		// 配置被冻结时，抛出异常
 		if (isFrozen()) {
 			throw new AopConfigException("Cannot add advisor: Configuration is frozen.");
 		}
 		if (!CollectionUtils.isEmpty(advisors)) {
+			// 遍历所有顾问，添加到顾问集合中
 			for (Advisor advisor : advisors) {
 				if (advisor instanceof IntroductionAdvisor introductionAdvisor) {
 					validateIntroductionAdvisor(introductionAdvisor);
@@ -377,6 +403,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 				Assert.notNull(advisor, "Advisor must not be null");
 				this.advisors.add(advisor);
 			}
+			// 清除缓存
 			adviceChanged();
 		}
 	}
@@ -384,6 +411,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	private void validateIntroductionAdvisor(IntroductionAdvisor advisor) {
 		advisor.validateInterfaces();
 		// If the advisor passed validation, we can make the change.
+		// IntroductionAdvisor引入接口
 		for (Class<?> ifc : advisor.getInterfaces()) {
 			addInterface(ifc);
 		}
@@ -391,14 +419,18 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 
 	private void addAdvisorInternal(int pos, Advisor advisor) throws AopConfigException {
 		Assert.notNull(advisor, "Advisor must not be null");
+		// 配置被冻结时修改会抛出异常
 		if (isFrozen()) {
 			throw new AopConfigException("Cannot add advisor: Configuration is frozen.");
 		}
+		// 检查下标是否越界
 		if (pos > this.advisors.size()) {
 			throw new IllegalArgumentException(
 					"Illegal position " + pos + " in advisor list with size " + this.advisors.size());
 		}
+		// 添加顾问
 		this.advisors.add(pos, advisor);
+		// 清除缓存
 		adviceChanged();
 	}
 
@@ -411,6 +443,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		return this.advisors;
 	}
 
+	// 添加通知
 	@Override
 	public void addAdvice(Advice advice) throws AopConfigException {
 		int pos = this.advisors.size();
@@ -418,6 +451,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	}
 
 	/**
+	 * 默认将advice包装成DefaultPointcutAdvisor
 	 * Cannot add introductions this way unless the advice implements IntroductionInfo.
 	 */
 	@Override
@@ -463,6 +497,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	}
 
 	/**
+	 * 是否包含指定通知
 	 * Is the given advice included in any advisor within this proxy configuration?
 	 * @param advice the advice to check inclusion of
 	 * @return whether this advice instance is included
@@ -479,6 +514,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	}
 
 	/**
+	 * 统计指定类型的通知数量
 	 * Count advices of the given class.
 	 * @param adviceClass the advice class to check
 	 * @return the count of the interceptors of this class or subclasses
@@ -497,6 +533,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 
 
 	/**
+	 * 调用代理的方法时会执行
 	 * Determine a list of {@link org.aopalliance.intercept.MethodInterceptor} objects
 	 * for the given method, based on this configuration.
 	 * @param method the proxied method
@@ -509,19 +546,25 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		if (this.methodCache != null) {
 			// Method-specific cache for method-specific pointcuts
 			MethodCacheKey cacheKey = new MethodCacheKey(method);
+			// 从缓存中获取
 			cachedInterceptors = this.methodCache.get(cacheKey);
 			if (cachedInterceptors == null) {
+				// 通过工厂获取
 				cachedInterceptors = this.advisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(
 						this, method, targetClass);
+				// 放入缓存中
 				this.methodCache.put(cacheKey, cachedInterceptors);
 			}
 		}
 		else {
 			// Shared cache since there are no method-specific advisors (see below).
+			// 获取缓存的顾问
 			cachedInterceptors = this.cachedInterceptors;
 			if (cachedInterceptors == null) {
+				// 通过工厂获取
 				cachedInterceptors = this.advisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(
 						this, method, targetClass);
+				// 放入缓存的顾问列表
 				this.cachedInterceptors = cachedInterceptors;
 			}
 		}

@@ -39,12 +39,14 @@ import org.springframework.aop.TargetSource;
 public interface Advised extends TargetClassAware {
 
 	/**
+	 * 配置是否被冻结，被冻结后无法修改代理配置
 	 * Return whether the Advised configuration is frozen,
 	 * in which case no advice changes can be made.
 	 */
 	boolean isFrozen();
 
 	/**
+	 * 是否cglib代理对象
 	 * Are we proxying the full target class instead of specified interfaces?
 	 */
 	boolean isProxyTargetClass();
@@ -64,6 +66,7 @@ public interface Advised extends TargetClassAware {
 	boolean isInterfaceProxied(Class<?> ifc);
 
 	/**
+	 * 设置目标源，目标对象被包装为TargetSource
 	 * Change the {@code TargetSource} used by this {@code Advised} object.
 	 * <p>Only works if the configuration isn't {@linkplain #isFrozen frozen}.
 	 * @param targetSource new TargetSource to use
@@ -71,11 +74,13 @@ public interface Advised extends TargetClassAware {
 	void setTargetSource(TargetSource targetSource);
 
 	/**
+	 * 获取目标源
 	 * Return the {@code TargetSource} used by this {@code Advised} object.
 	 */
 	TargetSource getTargetSource();
 
 	/**
+	 * 设置是否暴露代理对象
 	 * Set whether the proxy should be exposed by the AOP framework as a
 	 * {@link ThreadLocal} for retrieval via the {@link AopContext} class.
 	 * <p>It can be necessary to expose the proxy if an advised object needs
@@ -86,6 +91,7 @@ public interface Advised extends TargetClassAware {
 	void setExposeProxy(boolean exposeProxy);
 
 	/**
+	 * 是否暴露代理对象
 	 * Return whether the factory should expose the proxy as a {@link ThreadLocal}.
 	 * <p>It can be necessary to expose the proxy if an advised object needs
 	 * to invoke a method on itself with advice applied. Otherwise, if an
@@ -96,7 +102,7 @@ public interface Advised extends TargetClassAware {
 	boolean isExposeProxy();
 
 	/**
-	 * true，做了预处理，只包含了适用的顾问，为代理调用构建实际的advisor链时可以跳过ClassFilter检查。
+	 * true，做了预处理，为代理调用构建实际的advisor链时可以跳过ClassFilter检查。
 	 * Set whether this proxy configuration is pre-filtered so that it only
 	 * contains applicable advisors (matching this proxy's target class).
 	 * <p>Default is "false". Set this to "true" if the advisors have been
@@ -107,18 +113,21 @@ public interface Advised extends TargetClassAware {
 	void setPreFiltered(boolean preFiltered);
 
 	/**
+	 * 是否做了预处理过滤
 	 * Return whether this proxy configuration is pre-filtered so that it only
 	 * contains applicable advisors (matching this proxy's target class).
 	 */
 	boolean isPreFiltered();
 
 	/**
+	 * 获取所有的顾问数组
 	 * Return the advisors applying to this proxy.
 	 * @return a list of Advisors applying to this proxy (never {@code null})
 	 */
 	Advisor[] getAdvisors();
 
 	/**
+	 * 获取顾问的数量
 	 * Return the number of advisors applying to this proxy.
 	 * <p>The default implementation delegates to {@code getAdvisors().length}.
 	 * @since 5.3.1
@@ -128,6 +137,7 @@ public interface Advised extends TargetClassAware {
 	}
 
 	/**
+	 * 添加顾问
 	 * Add an advisor at the end of the advisor chain.
 	 * <p>The Advisor may be an {@link org.springframework.aop.IntroductionAdvisor},
 	 * in which new interfaces will be available when a proxy is next obtained
@@ -138,6 +148,7 @@ public interface Advised extends TargetClassAware {
 	void addAdvisor(Advisor advisor) throws AopConfigException;
 
 	/**
+	 * 添加顾问到指定位置
 	 * Add an Advisor at the specified position in the chain.
 	 * @param advisor the advisor to add at the specified position in the chain
 	 * @param pos position in chain (0 is head). Must be valid.
@@ -146,6 +157,7 @@ public interface Advised extends TargetClassAware {
 	void addAdvisor(int pos, Advisor advisor) throws AopConfigException;
 
 	/**
+	 * 移除顾问
 	 * Remove the given advisor.
 	 * @param advisor the advisor to remove
 	 * @return {@code true} if the advisor was removed; {@code false}
@@ -154,6 +166,7 @@ public interface Advised extends TargetClassAware {
 	boolean removeAdvisor(Advisor advisor);
 
 	/**
+	 * 移除指定位置的顾问
 	 * Remove the advisor at the given index.
 	 * @param index the index of advisor to remove
 	 * @throws AopConfigException if the index is invalid
@@ -161,6 +174,7 @@ public interface Advised extends TargetClassAware {
 	void removeAdvisor(int index) throws AopConfigException;
 
 	/**
+	 * 查询顾问的位置
 	 * Return the index (from 0) of the given advisor,
 	 * or -1 if no such advisor applies to this proxy.
 	 * <p>The return value of this method can be used to index into the advisors array.
@@ -170,6 +184,7 @@ public interface Advised extends TargetClassAware {
 	int indexOf(Advisor advisor);
 
 	/**
+	 * 替换指定的顾问为新顾问
 	 * Replace the given advisor.
 	 * <p><b>Note:</b> If the advisor is an {@link org.springframework.aop.IntroductionAdvisor}
 	 * and the replacement is not or implements different interfaces, the proxy will need
@@ -184,6 +199,7 @@ public interface Advised extends TargetClassAware {
 	boolean replaceAdvisor(Advisor a, Advisor b) throws AopConfigException;
 
 	/**
+	 * 添加通知
 	 * Add the given AOP Alliance advice to the tail of the advice (interceptor) chain.
 	 * <p>This will be wrapped in a DefaultPointcutAdvisor with a pointcut that always
 	 * applies, and returned from the {@code getAdvisors()} method in this wrapped form.
@@ -198,6 +214,7 @@ public interface Advised extends TargetClassAware {
 	void addAdvice(Advice advice) throws AopConfigException;
 
 	/**
+	 * 添加通知到指定位置
 	 * Add the given AOP Alliance Advice at the specified position in the advice chain.
 	 * <p>This will be wrapped in a {@link org.springframework.aop.support.DefaultPointcutAdvisor}
 	 * with a pointcut that always applies, and returned from the {@link #getAdvisors()}
@@ -212,6 +229,7 @@ public interface Advised extends TargetClassAware {
 	void addAdvice(int pos, Advice advice) throws AopConfigException;
 
 	/**
+	 * 移除指定通知
 	 * Remove the Advisor containing the given advice.
 	 * @param advice the advice to remove
 	 * @return {@code true} of the advice was found and removed;
@@ -220,6 +238,7 @@ public interface Advised extends TargetClassAware {
 	boolean removeAdvice(Advice advice);
 
 	/**
+	 * 查询指定通知的位置
 	 * Return the index (from 0) of the given AOP Alliance Advice,
 	 * or -1 if no such advice is an advice for this proxy.
 	 * <p>The return value of this method can be used to index into

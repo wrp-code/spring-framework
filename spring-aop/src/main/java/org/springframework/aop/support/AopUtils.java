@@ -353,8 +353,10 @@ public abstract class AopUtils {
 
 		// Use reflection to invoke the method.
 		try {
+			// 如果是桥接方法，返回最原始的非桥接方法
 			Method originalMethod = BridgeMethodResolver.findBridgedMethod(method);
 			ReflectionUtils.makeAccessible(originalMethod);
+			// 反射调用方法
 			return (coroutinesReactorPresent && KotlinDetector.isSuspendingFunction(originalMethod) ?
 					KotlinDelegate.invokeSuspendingFunction(originalMethod, target, args) : originalMethod.invoke(target, args));
 		}

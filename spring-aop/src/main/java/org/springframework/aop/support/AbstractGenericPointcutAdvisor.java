@@ -30,6 +30,7 @@ import org.aopalliance.aop.Advice;
 @SuppressWarnings("serial")
 public abstract class AbstractGenericPointcutAdvisor extends AbstractPointcutAdvisor {
 
+	// 默认通知
 	private Advice advice = EMPTY_ADVICE;
 
 

@@ -57,11 +57,12 @@ import org.springframework.util.Assert;
  */
 public class ThrowsAdviceInterceptor implements MethodInterceptor, AfterAdvice {
 
+	// 方法名称
 	private static final String AFTER_THROWING = "afterThrowing";
 
 	private static final Log logger = LogFactory.getLog(ThrowsAdviceInterceptor.class);
 
-
+	// 异常通知
 	private final Object throwsAdvice;
 
 	/** Methods on throws advice, keyed by exception class. */
@@ -79,8 +80,10 @@ public class ThrowsAdviceInterceptor implements MethodInterceptor, AfterAdvice {
 
 		Method[] methods = throwsAdvice.getClass().getMethods();
 		for (Method method : methods) {
+			// 查询指定名称的方法 afterThrowing
 			if (method.getName().equals(AFTER_THROWING)) {
 				Class<?> throwableParam = null;
+				// 校验参数，1个参数时，必须是Throwable类型的
 				if (method.getParameterCount() == 1) {
 					// just a Throwable parameter
 					throwableParam = method.getParameterTypes()[0];
@@ -89,6 +92,7 @@ public class ThrowsAdviceInterceptor implements MethodInterceptor, AfterAdvice {
 								"single argument must be a Throwable subclass");
 					}
 				}
+				// 4个参数时，必须是Method, Object[], target, Throwable类型的，第三个参数如果是Throwable就会报错
 				else if (method.getParameterCount() == 4) {
 					// Method, Object[], target, throwable
 					Class<?>[] paramTypes = method.getParameterTypes();
@@ -99,11 +103,12 @@ public class ThrowsAdviceInterceptor implements MethodInterceptor, AfterAdvice {
 					}
 					throwableParam = paramTypes[3];
 				}
+				// 其他情况的参数会导致throwableParam== null， 直接报错
 				if (throwableParam == null) {
 					throw new AopConfigException("Unsupported afterThrowing signature: single throwable argument " +
 							"or four arguments Method, Object[], target, throwable expected: " + method);
 				}
-				// An exception handler to register...
+				// 缓存异常：方法。如果多个方法处理同一个异常，就会报错
 				Method existingMethod = this.exceptionHandlerMap.put(throwableParam, method);
 				if (existingMethod != null) {
 					throw new AopConfigException("Only one afterThrowing method per specific Throwable subclass " +
@@ -115,6 +120,7 @@ public class ThrowsAdviceInterceptor implements MethodInterceptor, AfterAdvice {
 			}
 		}
 
+		// 如果异常通知没有合适的处理异常的方法，也会报错
 		if (this.exceptionHandlerMap.isEmpty()) {
 			throw new AopConfigException(
 					"At least one handler method must be found in class [" + throwsAdvice.getClass() + "]");
@@ -137,7 +143,9 @@ public class ThrowsAdviceInterceptor implements MethodInterceptor, AfterAdvice {
 			return mi.proceed();
 		}
 		catch (Throwable ex) {
+			// 方法出现异常时，catch异常，查询异常处理器来处理异常，最后将该异常抛出
 			Method handlerMethod = getExceptionHandler(ex);
+			// 有对应的异常处理方法才进行处理
 			if (handlerMethod != null) {
 				invokeHandlerMethod(mi, ex, handlerMethod);
 			}
@@ -157,6 +165,7 @@ public class ThrowsAdviceInterceptor implements MethodInterceptor, AfterAdvice {
 			logger.trace("Trying to find handler for exception of type [" + exceptionClass.getName() + "]");
 		}
 		Method handler = this.exceptionHandlerMap.get(exceptionClass);
+		// 如果handler为空，则遍历父类，查询父类是否有合适的异常处理器
 		while (handler == null && exceptionClass != Throwable.class) {
 			exceptionClass = exceptionClass.getSuperclass();
 			handler = this.exceptionHandlerMap.get(exceptionClass);
@@ -169,13 +178,17 @@ public class ThrowsAdviceInterceptor implements MethodInterceptor, AfterAdvice {
 
 	private void invokeHandlerMethod(MethodInvocation mi, Throwable ex, Method method) throws Throwable {
 		Object[] handlerArgs;
+		// 根据参数个数，决定传递的参数
 		if (method.getParameterCount() == 1) {
+			// 一个参数时，传递ex异常对象
 			handlerArgs = new Object[] {ex};
 		}
 		else {
+			// 四个参数时，传递4个参数 method args target ex
 			handlerArgs = new Object[] {mi.getMethod(), mi.getArguments(), mi.getThis(), ex};
 		}
 		try {
+			// 反射调用方法
 			method.invoke(this.throwsAdvice, handlerArgs);
 		}
 		catch (InvocationTargetException targetEx) {

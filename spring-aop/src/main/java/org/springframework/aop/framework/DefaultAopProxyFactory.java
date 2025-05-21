@@ -61,11 +61,12 @@ public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 		// optimize = true || proxyTargetClass = true || 未指定代理接口
 		if (config.isOptimize() || config.isProxyTargetClass() || !config.hasUserSuppliedInterfaces()) {
 			Class<?> targetClass = config.getTargetClass();
+			// 既没有指定代理类，也没有指定代理接口
 			if (targetClass == null && config.getProxiedInterfaces().length == 0) {
 				throw new AopConfigException("TargetSource cannot determine target class: " +
 						"Either an interface or a target is required for proxy creation.");
 			}
-			// 被代理类是接口或者jdk代理类，使用jdk代理
+			// 没有指定代理类  || 被代理类是接口 || jdk代理类 || lambda类
 			if (targetClass == null || targetClass.isInterface() ||
 					Proxy.isProxyClass(targetClass) || ClassUtils.isLambdaClass(targetClass)) {
 				return new JdkDynamicAopProxy(config);

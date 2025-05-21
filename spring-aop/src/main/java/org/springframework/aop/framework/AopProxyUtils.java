@@ -85,6 +85,7 @@ public abstract class AopProxyUtils {
 		Class<?> result = null;
 		while (current instanceof TargetClassAware targetClassAware) {
 			result = targetClassAware.getTargetClass();
+			// 目标源中获取目标对象
 			current = getSingletonTarget(current);
 		}
 		if (result == null) {
@@ -161,33 +162,42 @@ public abstract class AopProxyUtils {
 	 * @see DecoratingProxy
 	 */
 	static Class<?>[] completeProxiedInterfaces(AdvisedSupport advised, boolean decoratingProxy) {
+		// 获取代理配置中的接口
 		Class<?>[] specifiedInterfaces = advised.getProxiedInterfaces();
 		if (specifiedInterfaces.length == 0) {
 			// No user-specified interfaces: check whether target class is an interface.
+			// 获取目标类型
 			Class<?> targetClass = advised.getTargetClass();
 			if (targetClass != null) {
+				// 目标类型为接口，添加到代理接口列表
 				if (targetClass.isInterface()) {
 					advised.setInterfaces(targetClass);
 				}
+				// 目标类型为代理对象，将代理对象栅的所有接口添加到代理接口列表
 				else if (Proxy.isProxyClass(targetClass) || ClassUtils.isLambdaClass(targetClass)) {
 					advised.setInterfaces(targetClass.getInterfaces());
 				}
+				// 再次获取代理配置中的接口列表
 				specifiedInterfaces = advised.getProxiedInterfaces();
 			}
 		}
 		List<Class<?>> proxiedInterfaces = new ArrayList<>(specifiedInterfaces.length + 3);
 		for (Class<?> ifc : specifiedInterfaces) {
 			// Only non-sealed interfaces are actually eligible for JDK proxying (on JDK 17)
+			// 只有非密封类接口才会被代理
 			if (!ifc.isSealed()) {
 				proxiedInterfaces.add(ifc);
 			}
 		}
+		// 添加SpringProxy接口，是一个标识接口
 		if (!advised.isInterfaceProxied(SpringProxy.class)) {
 			proxiedInterfaces.add(SpringProxy.class);
 		}
+		// opaque默认为false，允许代理对象转换为Advised，添加Advised接口
 		if (!advised.isOpaque() && !advised.isInterfaceProxied(Advised.class)) {
 			proxiedInterfaces.add(Advised.class);
 		}
+		// 装饰代理对象，添加DecoratingProxy接口
 		if (decoratingProxy && !advised.isInterfaceProxied(DecoratingProxy.class)) {
 			proxiedInterfaces.add(DecoratingProxy.class);
 		}

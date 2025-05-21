@@ -49,6 +49,8 @@ import org.springframework.util.ReflectionUtils.MethodFilter;
  * @author Phillip Webb
  * @since 2.0
  */
+// 桥接方法是 JDK 1.5 引入泛型后，为了使Java的泛型方法生成的字节码和 1.5 版本前的字节码相兼容，由编译器自动生成的方法。
+// Method.isBridge()方法来判断一个方法是否是桥接方法
 public final class BridgeMethodResolver {
 
 	private static final Map<Object, Method> cache = new ConcurrentReferenceHashMap<>();

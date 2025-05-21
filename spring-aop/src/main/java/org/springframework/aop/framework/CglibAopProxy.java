@@ -112,6 +112,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 
 	/** The configuration used to configure this proxy. */
+	// 代理配置
 	protected final AdvisedSupport advised;
 
 	@Nullable
@@ -173,59 +174,77 @@ class CglibAopProxy implements AopProxy, Serializable {
 		return (Class<?>) buildProxy(classLoader, true);
 	}
 
+	// classOnly 是否只生成代理类的class
 	private Object buildProxy(@Nullable ClassLoader classLoader, boolean classOnly) {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Creating CGLIB proxy: " + this.advised.getTargetSource());
 		}
 
 		try {
+			// 目标类
 			Class<?> rootClass = this.advised.getTargetClass();
 			Assert.state(rootClass != null, "Target class must be available for creating a CGLIB proxy");
 
+			// 代理对象的父类
 			Class<?> proxySuperClass = rootClass;
 			if (rootClass.getName().contains(ClassUtils.CGLIB_CLASS_SEPARATOR)) {
+				// 如果目标类是cglib代理类，将目标类的父类作为代理对象的父类
 				proxySuperClass = rootClass.getSuperclass();
+				// 将代理类的接口添加到代理接口列表
 				Class<?>[] additionalInterfaces = rootClass.getInterfaces();
 				for (Class<?> additionalInterface : additionalInterfaces) {
 					this.advised.addInterface(additionalInterface);
 				}
 			}
 
+			// 写日志信息
 			// Validate the class, writing log messages as necessary.
 			validateClassIfNecessary(proxySuperClass, classLoader);
 
 			// Configure CGLIB Enhancer...
+			// 创建Enhancer
 			Enhancer enhancer = createEnhancer();
 			if (classLoader != null) {
+				// 设置classLoader
 				enhancer.setClassLoader(classLoader);
 				if (classLoader instanceof SmartClassLoader smartClassLoader &&
 						smartClassLoader.isClassReloadable(proxySuperClass)) {
 					enhancer.setUseCache(false);
 				}
 			}
+			// 设置父类
 			enhancer.setSuperclass(proxySuperClass);
+			// 设置代理接口，[开发者硬编码指定的需要被代理的接口列表,SpringProxy,Advised]
 			enhancer.setInterfaces(AopProxyUtils.completeProxiedInterfaces(this.advised));
+			// 设置代理类类名生成策略
 			enhancer.setNamingPolicy(SpringNamingPolicy.INSTANCE);
+			// 是否指定classLoader加载类
 			enhancer.setAttemptLoad(enhancer.getUseCache() && AotDetector.useGeneratedArtifacts());
+			// 设置字节码生成策略
 			enhancer.setStrategy(KotlinDetector.isKotlinType(proxySuperClass) ?
 					new ClassLoaderAwareGeneratorStrategy(classLoader) :
 					new ClassLoaderAwareGeneratorStrategy(classLoader, undeclaredThrowableStrategy)
 			);
 
+			// 获取Callback数组
 			Callback[] callbacks = getCallbacks(rootClass);
+			// 获取Callback的类型数组
 			Class<?>[] types = new Class<?>[callbacks.length];
 			for (int x = 0; x < types.length; x++) {
 				types[x] = callbacks[x].getClass();
 			}
 			// fixedInterceptorMap only populated at this point, after getCallbacks call above
+			// 设置CallbackFilter，控制目标对象的方法被哪个Callback处理
 			ProxyCallbackFilter filter = new ProxyCallbackFilter(
 					this.advised.getConfigurationOnlyCopy(), this.fixedInterceptorMap, this.fixedInterceptorOffset);
 			enhancer.setCallbackFilter(filter);
+			// 设置Callback类型
 			enhancer.setCallbackTypes(types);
 
 			// Generate the proxy class and create a proxy instance.
 			// ProxyCallbackFilter has method introspection capability with Advisor access.
 			try {
+				// 创建代理类Class 或生成代理对象
 				return (classOnly ? createProxyClass(enhancer) : createProxyClassAndInstance(enhancer, callbacks));
 			}
 			finally {
@@ -251,8 +270,11 @@ class CglibAopProxy implements AopProxy, Serializable {
 	}
 
 	protected Object createProxyClassAndInstance(Enhancer enhancer, Callback[] callbacks) {
+		// 设置是否拦截从构造器中调用的方法
 		enhancer.setInterceptDuringConstruction(false);
+		// 设置Callback
 		enhancer.setCallbacks(callbacks);
+		// 生成代理对象
 		return (this.constructorArgs != null && this.constructorArgTypes != null ?
 				enhancer.create(this.constructorArgTypes, this.constructorArgs) :
 				enhancer.create());
@@ -316,8 +338,11 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 	private Callback[] getCallbacks(Class<?> rootClass) throws Exception {
 		// Parameters used for optimization choices...
+		// 目标类是否是单例的
 		boolean isStatic = this.advised.getTargetSource().isStatic();
+		// 是否冻结代理对象，冻结后代理对象将不再改变
 		boolean isFrozen = this.advised.isFrozen();
+		// 是否暴露代理对象
 		boolean exposeProxy = this.advised.isExposeProxy();
 
 		// Choose an "aop" interceptor (used for AOP calls).

@@ -61,30 +61,38 @@ import org.springframework.lang.Nullable;
  */
 public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Cloneable {
 
+	// 代理对象
 	protected final Object proxy;
 
+	// 目标对象
 	@Nullable
 	protected final Object target;
 
+	// 调用的方法
 	protected final Method method;
 
+	// 方法参数
 	protected Object[] arguments;
 
+	// 目标类的类型
 	@Nullable
 	private final Class<?> targetClass;
 
+	// 用户类型
 	/**
 	 * Lazily initialized map of user-specific attributes for this invocation.
 	 */
 	@Nullable
 	private Map<String, Object> userAttributes;
 
+	// 拦截器列表
 	/**
 	 * List of MethodInterceptor and InterceptorAndDynamicMethodMatcher
 	 * that need dynamic checks.
 	 */
 	protected final List<?> interceptorsAndDynamicMethodMatchers;
 
+	// 拦截器索引下标
 	/**
 	 * Index from 0 of the current interceptor we're invoking.
 	 * -1 until we invoke: then the current interceptor.
