@@ -34,6 +34,7 @@ import org.springframework.aop.Advisor;
  *
  * @author Rod Johnson
  */
+// 将Advisor中的Advice适配为MethodInterceptor
 public interface AdvisorAdapter {
 
 	/**
@@ -45,6 +46,7 @@ public interface AdvisorAdapter {
 	 * @see #getInterceptor(org.springframework.aop.Advisor)
 	 * @see org.springframework.aop.BeforeAdvice
 	 */
+	// 当前适配器是否支持指定的通知类型
 	boolean supportsAdvice(Advice advice);
 
 	/**
@@ -58,6 +60,7 @@ public interface AdvisorAdapter {
 	 * no need to cache instances for efficiency, as the AOP framework
 	 * caches advice chains.
 	 */
+	// 根据顾问获取拦截器
 	MethodInterceptor getInterceptor(Advisor advisor);
 
 }

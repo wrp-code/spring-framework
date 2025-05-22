@@ -540,7 +540,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	 * @param targetClass the target class
 	 * @return a List of MethodInterceptors (may also include InterceptorAndDynamicMethodMatchers)
 	 */
-	//基于当前配置，获取给定方法的方法调用链列表
+	//基于当前配置，获取给定方法的方法调用链列表 ，内部委派给DefaultAdvisorChainFactory
 	public List<Object> getInterceptorsAndDynamicInterceptionAdvice(Method method, @Nullable Class<?> targetClass) {
 		List<Object> cachedInterceptors;
 		if (this.methodCache != null) {

@@ -57,6 +57,7 @@ public interface AdvisorAdapterRegistry {
 	 * not understood by any registered AdvisorAdapter
 	 */
 	//根据Advisor获取方法MethodInterceptor列表
+	// 因为Advisor中的Advice，可能同时实现了多个通知类型，所以会返回一个拦截器数组
 	MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException;
 
 	/**

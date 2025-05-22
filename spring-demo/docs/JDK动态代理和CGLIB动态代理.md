@@ -580,7 +580,7 @@ interface org.springframework.cglib.proxy.Factory
 ### 3.6 cglib原理
 
 在main方法第一行增加如下代码，会将cglib代理类文件存储在指定的目录下
-
+- 原生Cglib代理生成的代理对象会实现`Factory`接口
 ```java
 System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY,"E://temp");
 ```

@@ -59,11 +59,14 @@ class ObjenesisCglibAopProxy extends CglibAopProxy {
 
 	@Override
 	protected Object createProxyClassAndInstance(Enhancer enhancer, Callback[] callbacks) {
+		// 创建代理类
 		Class<?> proxyClass = enhancer.createClass();
+		// 代理对象实例
 		Object proxyInstance = null;
 
 		if (objenesis.isWorthTrying()) {
 			try {
+				// 创建实例
 				proxyInstance = objenesis.newInstance(proxyClass, enhancer.getUseCache());
 			}
 			catch (Throwable ex) {
@@ -72,6 +75,7 @@ class ObjenesisCglibAopProxy extends CglibAopProxy {
 			}
 		}
 
+		// objenesis 如果创建失败，最总还是通过反射调用构造器创建对象
 		if (proxyInstance == null) {
 			// Regular instantiation via default constructor...
 			try {
@@ -88,6 +92,7 @@ class ObjenesisCglibAopProxy extends CglibAopProxy {
 			}
 		}
 
+		// 设置Callback数组
 		((Factory) proxyInstance).setCallbacks(callbacks);
 		return proxyInstance;
 	}

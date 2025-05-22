@@ -47,45 +47,56 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 	 * Create a new DefaultAdvisorAdapterRegistry, registering well-known adapters.
 	 */
 	public DefaultAdvisorAdapterRegistry() {
+		// 默认注册前置通知、后置通知、异常通知的适配器
 		registerAdvisorAdapter(new MethodBeforeAdviceAdapter());
 		registerAdvisorAdapter(new AfterReturningAdviceAdapter());
 		registerAdvisorAdapter(new ThrowsAdviceAdapter());
 	}
 
-
+	// advice包装成Advisor
 	@Override
 	public Advisor wrap(Object adviceObject) throws UnknownAdviceTypeException {
 		if (adviceObject instanceof Advisor advisor) {
+			// Advisor直接返回
 			return advisor;
 		}
+		// 如果不是Advice类型，直接报错
 		if (!(adviceObject instanceof Advice advice)) {
 			throw new UnknownAdviceTypeException(adviceObject);
 		}
 		if (advice instanceof MethodInterceptor) {
 			// So well-known it doesn't even need an adapter.
+			// MethodInterceptor => DefaultPointcutAdvisor
 			return new DefaultPointcutAdvisor(advice);
 		}
+		// 遍历支持的适配器，将advice包装成DefaultPointcutAdvisor
 		for (AdvisorAdapter adapter : this.adapters) {
 			// Check that it is supported.
 			if (adapter.supportsAdvice(advice)) {
 				return new DefaultPointcutAdvisor(advice);
 			}
 		}
+		// 不支持的Advice类型，直接报错
 		throw new UnknownAdviceTypeException(advice);
 	}
 
 	@Override
 	public MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException {
+		// 拦截器集合
 		List<MethodInterceptor> interceptors = new ArrayList<>(3);
+		// 获取Advisor中的advice
 		Advice advice = advisor.getAdvice();
 		if (advice instanceof MethodInterceptor methodInterceptor) {
+			// Advisor中的Advice是MethodInterceptor，直接添加
 			interceptors.add(methodInterceptor);
 		}
+		// 轮询合适的适配器进行转换 Advice => MethodInterceptor,并添加
 		for (AdvisorAdapter adapter : this.adapters) {
 			if (adapter.supportsAdvice(advice)) {
 				interceptors.add(adapter.getInterceptor(advisor));
 			}
 		}
+		// 没有合适的拦截器，直接报错
 		if (interceptors.isEmpty()) {
 			throw new UnknownAdviceTypeException(advisor.getAdvice());
 		}
