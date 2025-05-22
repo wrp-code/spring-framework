@@ -12,4 +12,8 @@ public interface IMethodInfo {
 
 	//获取被代理的对象中方法名称列表
 	List<String> methodNames();
+
+	default void hello() {
+		System.out.println("hello, 接口默认方法");
+	}
 }

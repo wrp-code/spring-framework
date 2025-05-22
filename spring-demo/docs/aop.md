@@ -1773,7 +1773,321 @@ public class ThrowsAdviceInterceptor implements MethodInterceptor, AfterAdvice {
 
 ### 2.5 执行拦截器链
 
-ReflectionMethodInvocation
+> `CglibAopProxy`和`JdkDynamicAopProxy`获取拦截器链后都会调用`ReflectionMethodInvocation`来执行连接器链
+
+通过`currentInterceptorIndex`来遍历拦截器，拦截器的类型：
+
+- `MethodInterceptor` 普通类型
+- `InterceptorAndDynamicMethodMatcher` 动态匹配的拦截器
+
+```java
+public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Cloneable {
+
+    // 代理对象
+    protected final Object proxy;
+
+    // 目标对象
+    @Nullable
+    protected final Object target;
+
+    // 调用的方法
+    protected final Method method;
+
+    // 方法参数
+    protected Object[] arguments;
+
+    // 目标类的类型
+    @Nullable
+    private final Class<?> targetClass;
+
+    // 用户类型
+    @Nullable
+    private Map<String, Object> userAttributes;
+
+    // 拦截器列表, MethodInterceptor and InterceptorAndDynamicMethodMatcher类型
+    protected final List<?> interceptorsAndDynamicMethodMatchers;
+
+    // 拦截器索引下标
+    private int currentInterceptorIndex = -1;
+
+
+    protected ReflectiveMethodInvocation(
+          Object proxy, @Nullable Object target, Method method, @Nullable Object[] arguments,
+          @Nullable Class<?> targetClass, List<Object> interceptorsAndDynamicMethodMatchers) {
+
+       this.proxy = proxy;
+       this.target = target;
+       this.targetClass = targetClass;
+       // 如果method是桥接方法，则返回最原始的方法
+       this.method = BridgeMethodResolver.findBridgedMethod(method);
+       // 处理变长参数
+       this.arguments = AopProxyUtils.adaptArgumentsIfNecessary(method, arguments);
+       this.interceptorsAndDynamicMethodMatchers = interceptorsAndDynamicMethodMatchers;
+    }
+
+
+    // 来处理被调用的方法，会递归进行调用，所有的拦截器都执行完毕之后，会通过反射调用目标方法
+    @Override
+    @Nullable
+    public Object proceed() throws Throwable {
+       // We start with an index of -1 and increment early.
+       if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) {
+          // currentInterceptorIndex 当前拦截器下标到最后了，直接调用原始方法
+          return invokeJoinpoint();
+       }
+
+       // 获取下一个拦截器，++currentInterceptorIndex
+       Object interceptorOrInterceptionAdvice =
+             this.interceptorsAndDynamicMethodMatchers.get(++this.currentInterceptorIndex);
+       // 动态匹配的拦截器，需要去校验方法参数
+       if (interceptorOrInterceptionAdvice instanceof InterceptorAndDynamicMethodMatcher dm) {
+          // 获取到目标类型
+          Class<?> targetClass = (this.targetClass != null ? this.targetClass : this.method.getDeclaringClass());
+          // 根据MethodMatcher判断方法参数，是否匹配
+          if (dm.matcher().matches(this.method, targetClass, this.arguments)) {
+             // 调用拦截器
+             return dm.interceptor().invoke(this);
+          }
+          else {
+             // 不匹配时，跳过当前拦截器，递归调用下一个拦截器
+             return proceed();
+          }
+       }
+       else {
+          // 调用拦截器
+          return ((MethodInterceptor) interceptorOrInterceptionAdvice).invoke(this);
+       }
+    }
+
+    @Nullable
+    protected Object invokeJoinpoint() throws Throwable {
+       // 反射调用方法
+       return AopUtils.invokeJoinpointUsingReflection(this.target, this.method, this.arguments);
+    }
+
+}
+```
+
+## 3. 简化代理的创建
+
+![ProxyCreatorSupport.png](./pics/ProxyCreatorSupport.png)
+
+- `ProxyCreatorSupport`
+- `ProxyFactory`
+
+### 3.1 ProxyCreatorSupport 代理创建的支持
+
+> 内部含有`AopProxyFactory`，调用`createAopProxy`,委派给AopProxyFactory进行创建代理
+
+```java
+public class ProxyCreatorSupport extends AdvisedSupport {
+
+    private AopProxyFactory aopProxyFactory;
+
+    public ProxyCreatorSupport() {
+       this.aopProxyFactory = DefaultAopProxyFactory.INSTANCE;
+    }
+
+
+    public void setAopProxyFactory(AopProxyFactory aopProxyFactory) {
+       Assert.notNull(aopProxyFactory, "AopProxyFactory must not be null");
+       this.aopProxyFactory = aopProxyFactory;
+    }
+
+    public AopProxyFactory getAopProxyFactory() {
+       return this.aopProxyFactory;
+    }
+
+
+    protected final synchronized AopProxy createAopProxy() {
+       if (!this.active) {
+          activate();
+       }
+       return getAopProxyFactory().createAopProxy(this);
+    }
+
+}
+```
+
+### 3.2 ProxyFactory
+
+主要通过两种方式来创建代理
+
+- 通过构造器方法 + `getProxy`方法
+- 通过静态方法`getProxy`，内部会自己创建一个`ProxyFactory`
+
+```java
+public class ProxyFactory extends ProxyCreatorSupport {
+
+    public ProxyFactory() {
+    }
+
+    public ProxyFactory(Object target) {
+       setTarget(target);
+       setInterfaces(ClassUtils.getAllInterfaces(target));
+    }
+
+    public ProxyFactory(Class<?>... proxyInterfaces) {
+       setInterfaces(proxyInterfaces);
+    }
+
+    public ProxyFactory(Class<?> proxyInterface, Interceptor interceptor) {
+       addInterface(proxyInterface);
+       addAdvice(interceptor);
+    }
+
+    public ProxyFactory(Class<?> proxyInterface, TargetSource targetSource) {
+       addInterface(proxyInterface);
+       setTargetSource(targetSource);
+    }
+
+    public Object getProxy() {
+       return createAopProxy().getProxy();
+    }
+
+    public Object getProxy(@Nullable ClassLoader classLoader) {
+       return createAopProxy().getProxy(classLoader);
+    }
+
+    public Class<?> getProxyClass(@Nullable ClassLoader classLoader) {
+       return createAopProxy().getProxyClass(classLoader);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getProxy(Class<T> proxyInterface, Interceptor interceptor) {
+       return (T) new ProxyFactory(proxyInterface, interceptor).getProxy();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getProxy(Class<T> proxyInterface, TargetSource targetSource) {
+       return (T) new ProxyFactory(proxyInterface, targetSource).getProxy();
+    }
+
+    public static Object getProxy(TargetSource targetSource) {
+       if (targetSource.getTargetClass() == null) {
+          throw new IllegalArgumentException("Cannot create class proxy for TargetSource with null target class");
+       }
+       ProxyFactory proxyFactory = new ProxyFactory();
+       proxyFactory.setTargetSource(targetSource);
+       proxyFactory.setProxyTargetClass(true);
+       return proxyFactory.getProxy();
+    }
+
+}
+```
+
+### 3.3 创建代理案例
+
+1. 创建类的代理
+
+```java
+@Test
+public void test15() {
+    UserService userService = new UserService();
+    ProxyFactory proxyFactory = new ProxyFactory();
+    proxyFactory.setTarget(userService);
+    Object proxy = proxyFactory.getProxy();
+
+    System.out.println("代理对象的类型：" + proxy.getClass());
+    System.out.println("代理对象的父类：" + proxy.getClass().getSuperclass());
+    System.out.println("代理对象实现的接口列表");
+    for (Class<?> cf : proxy.getClass().getInterfaces()) {
+        System.out.println(cf);
+    }
+}
+```
+
+从结果中发现
+
+- 代理类时，使用CGLIB
+- 代理对象是目标类的子类
+- 代理接口中默认含有`SpringProxy、Advised、Factory`
+
+```tex
+代理对象的类型：class com.wrp.spring.framework.proxy.demo2.UserService$$SpringCGLIB$$0
+代理对象的父类：class com.wrp.spring.framework.proxy.demo2.UserService
+代理对象实现的接口列表
+interface org.springframework.aop.SpringProxy
+interface org.springframework.aop.framework.Advised
+interface org.springframework.cglib.proxy.Factory
+```
+
+2. 代理接口
+
+- 指定的代理接口不可以没有被目标类实现（调用没被实现的接口方法时会报错）
+- 可以只指定代理接口
+
+```java
+@Test
+public void test16() {
+    DefaultMethodInfo methodInfo = new DefaultMethodInfo(UserService.class);
+    ProxyFactory proxyFactory = new ProxyFactory();
+    proxyFactory.setTarget(methodInfo);
+    proxyFactory.setInterfaces(IMethodInfo.class);
+    Object proxy = proxyFactory.getProxy();
+
+    System.out.println("代理对象的类型：" + proxy.getClass());
+    System.out.println("代理对象的父类：" + proxy.getClass().getSuperclass());
+    System.out.println("代理对象实现的接口列表");
+    for (Class<?> cf : proxy.getClass().getInterfaces()) {
+        System.out.println(cf);
+    }
+}
+```
+
+- 使用JDK代理
+- JDK代理对象继承Proxy
+- 代理接口包括用户指定的接口、SpringProxy、Advised、DecoratingProxy
+
+```tex
+代理对象的类型：class jdk.proxy3.$Proxy16
+代理对象的父类：class java.lang.reflect.Proxy
+代理对象实现的接口列表
+interface com.wrp.spring.framework.proxy.demo2.IMethodInfo
+interface org.springframework.aop.SpringProxy
+interface org.springframework.aop.framework.Advised
+interface org.springframework.core.DecoratingProxy
+```
+
+3. 强制使用CGLIB
+
+这会使`DefaultAopProxyFactory`在创建AopProxy时选择CGLIB，// optimize = true || proxyTargetClass = true || 未指定代理接口
+
+```java
+proxyFactory.setProxyTargetClass(true);
+```
+
+4. 暴露代理对象
+
+在m1中通过`this.m2`调用，如果是在代理对象中，指定的是目标方法，不会进行代理
+
+```java
+class Service {
+    public void m1() {
+        System.out.println("m1");
+        this.m2();
+    }
+
+    public void m2() {
+        System.out.println("m2");
+    }
+}
+```
+
+所以需要暴露代理对象，然后改用如下代码
+
+```java
+class Service {
+    public void m1() {
+        System.out.println("m1");
+        ((Service)AopContext.currentProxy()).m2();
+    }
+
+    public void m2() {
+        System.out.println("m2");
+    }
+}
+```
 
 
 
