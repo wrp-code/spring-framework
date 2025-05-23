@@ -1868,12 +1868,15 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 }
 ```
 
-## 3. 简化代理的创建
+## 3. 手动代理
+
+> `ProxyCreatorSupport`下的子类都是手动代理
 
 ![ProxyCreatorSupport.png](./pics/ProxyCreatorSupport.png)
 
 - `ProxyCreatorSupport`
 - `ProxyFactory`
+- `ProxyFactoryBean`
 
 ### 3.1 ProxyCreatorSupport 代理创建的支持
 
@@ -2089,7 +2092,9 @@ class Service {
 }
 ```
 
+### 3.4 ProxyFactoryBean
 
+> 手动注册的一种
 
 
 
