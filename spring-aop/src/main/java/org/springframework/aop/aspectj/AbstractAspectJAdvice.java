@@ -76,8 +76,10 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 		if (!(mi instanceof ProxyMethodInvocation pmi)) {
 			throw new IllegalStateException("MethodInvocation is not a Spring ProxyMethodInvocation: " + mi);
 		}
+		// 通过用户属性获取连接点
 		JoinPoint jp = (JoinPoint) pmi.getUserAttribute(JOIN_POINT_KEY);
 		if (jp == null) {
+			// 创建并缓存
 			jp = new MethodInvocationProceedingJoinPoint(pmi);
 			pmi.setUserAttribute(JOIN_POINT_KEY, jp);
 		}
@@ -93,6 +95,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 
 	protected transient Method aspectJAdviceMethod;
 
+	// 切入点的表达式
 	private final AspectJExpressionPointcut pointcut;
 
 	private final AspectInstanceFactory aspectInstanceFactory;
@@ -660,6 +663,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	 */
 	@Nullable
 	protected JoinPointMatch getJoinPointMatch() {
+		// 获取方法执行点
 		MethodInvocation mi = ExposeInvocationInterceptor.currentInvocation();
 		if (!(mi instanceof ProxyMethodInvocation pmi)) {
 			throw new IllegalStateException("MethodInvocation is not a Spring ProxyMethodInvocation: " + mi);
@@ -676,6 +680,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	@Nullable
 	protected JoinPointMatch getJoinPointMatch(ProxyMethodInvocation pmi) {
 		String expression = this.pointcut.getExpression();
+		// 通过用户属性，获取表达式的执行连接点匹配器
 		return (expression != null ? (JoinPointMatch) pmi.getUserAttribute(expression) : null);
 	}
 
