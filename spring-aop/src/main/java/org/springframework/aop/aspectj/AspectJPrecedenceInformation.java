@@ -38,21 +38,25 @@ public interface AspectJPrecedenceInformation extends Ordered {
 	/**
 	 * Return the name of the aspect (bean) in which the advice was declared.
 	 */
+	// 切面名称
 	String getAspectName();
 
 	/**
 	 * Return the declaration order of the advice member within the aspect.
 	 */
+	// 声明的顺序
 	int getDeclarationOrder();
 
 	/**
 	 * Return whether this is a before advice.
 	 */
+	// 是否是前置通知
 	boolean isBeforeAdvice();
 
 	/**
 	 * Return whether this is an after advice.
 	 */
+	// 是否是后置通知
 	boolean isAfterAdvice();
 
 }

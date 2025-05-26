@@ -4,11 +4,15 @@ import com.wrp.spring.framework.proxy.demo2.DefaultMethodInfo;
 import com.wrp.spring.framework.proxy.demo2.IMethodInfo;
 import com.wrp.spring.framework.proxy.demo2.UserService;
 import com.wrp.spring.framework.proxy.demo4.Service;
+import com.wrp.spring.framework.proxy.demo5.Config5;
+import com.wrp.spring.framework.proxy.demo5.QueryUser;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.lang.reflect.Method;
 
@@ -96,5 +100,32 @@ public class AopTest {
 		proxyFactory.setExposeProxy(true);
 		Service proxy = (Service) proxyFactory.getProxy();
 		proxy.m1();
+	}
+
+	@Test
+	public void test5() {
+		AnnotationConfigApplicationContext context =
+				new AnnotationConfigApplicationContext(Config5.class);
+		ProxyFactoryBean factoryBean = new ProxyFactoryBean();
+		factoryBean.setTargetName("queryUser");
+		factoryBean.addAdvice(new MethodBeforeAdvice() {
+			@Override
+			public void before(Method method, Object[] args, Object target) throws Throwable {
+				System.out.println("invoke : " + method.getName());
+			}
+		});
+
+		factoryBean.setBeanFactory(context);
+		QueryUser queryUser = (QueryUser) factoryBean.getObject();
+		queryUser.query();
+	}
+
+	@Test
+	public void test6() {
+		AnnotationConfigApplicationContext context =
+				new AnnotationConfigApplicationContext(Config5.class);
+
+		QueryUser queryBean = context.getBean("queryBean", QueryUser.class);
+		queryBean.query();
 	}
 }

@@ -1874,9 +1874,10 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 
 ![ProxyCreatorSupport.png](./pics/ProxyCreatorSupport.png)
 
-- `ProxyCreatorSupport`
-- `ProxyFactory`
-- `ProxyFactoryBean`
+- `ProxyCreatorSupport` 手动创建代理类支持
+- `ProxyFactory` 代理工厂
+- `ProxyFactoryBean` 结合Spring容器手动创建代理类
+- AspectJproxyFactory 结合Aspect框架，手动创建代理类。Aspect是最受欢迎的AOP框架
 
 ### 3.1 ProxyCreatorSupport 代理创建的支持
 
@@ -2097,6 +2098,286 @@ class Service {
 > 手动注册的一种
 
 
+
+## 4. AspectJProxyFactory
+
+> 结合Aspect 手动创建代理类
+
+### 4.1 案例
+
+`@Aspect`注解定义切面类
+
+```java
+@Aspect
+public class Aspect1 {
+
+    //@2：定义了一个切入点，可以匹配Service1中所有方法
+    @Pointcut("execution(* com.wrp.spring.lesson003.aop.Service1.*(..))")
+    public void pointcut1() {
+    }
+
+    //@3：定义了一个前置通知，这个通知对刚刚上面我们定义的切入点中的所有方法有效
+    @Before(value = "pointcut1()")
+    public void before(JoinPoint joinPoint) {
+       //输出连接点的信息
+       System.out.println("前置通知，" + joinPoint);
+    }
+
+    //@4：定义了一个异常通知，这个通知对刚刚上面我们定义的切入点中的所有方法有效
+    @AfterThrowing(value = "pointcut1()", throwing = "e")
+    public void afterThrowing(JoinPoint joinPoint, Exception e) {
+       //发生异常之后输出异常信息
+       System.out.println(joinPoint + ",发生异常：" + e.getMessage());
+    }
+
+}
+```
+
+测试
+
+```java
+@Test
+public void test1() {
+    try {
+       //对应目标对象
+       Service1 target = new Service1();
+       //创建AspectJProxyFactory对象
+       AspectJProxyFactory proxyFactory = new AspectJProxyFactory();
+       //设置被代理的目标对象
+       proxyFactory.setTarget(target);
+       //设置标注了@Aspect注解的类
+       proxyFactory.addAspect(Aspect1.class);
+       //生成代理对象
+       Service1 proxy = proxyFactory.getProxy();
+       //使用代理对象
+       proxy.m1();
+       proxy.m2();
+    } catch (Exception e) {
+    }
+}
+```
+
+### 4.2 切面
+
+> 使用`@Aspect`定义
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Aspect {
+
+    //per clause expression ;""表示单例Aspect
+	String value() default "";
+}
+```
+
+### 4.3 切入点
+
+> 使用`@Pointcut`定义，切入点的12种用法
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Pointcut {
+
+    // 切入点表达式 12种
+    String value() default "";
+
+ 	// 
+    String argNames() default "";
+}
+
+```
+
+#### 4.3.1 切入点表达式
+
+> @Pointcut(value=“表达标签 (表达式格式)”) 
+
+表达式标签有以下10种：
+
+- execution：用于匹配方法执行的连接点
+- within：匹配指定类型中的方法
+- this：用于匹配当前AOP代理对象类型的执行方法；注意是AOP代理对象的类型匹配，这样就可能包括引入接口也类型匹配
+- target：用于匹配当前目标对象类型的执行方法；注意是目标对象的类型匹配，这样就不包括引入接口也类型匹配
+- args：匹配方法的参数为指定类型
+- @within：匹配持有指定注解类型的方法
+- @target：匹配方法所在对象持有指定的注解
+- @args：匹配方法的参数持有指定注解
+- @annotation：匹配持有指定注解的方法
+- bean：Spring AOP扩展的，AspectJ没有对于指示符，用于匹配特定名称的Bean对象的执行方法
+
+#### 4.3.2 execution
+
+匹配方法
+
+`execution(modifiers-pattern? ret-type-pattern declaring-type-pattern? name-pattern(param-pattern) throws-pattern?)`
+
+- modifiers-pattern 可选，方法修饰符
+- ret-type-pattern 方法返回值
+- declaring-type-pattern 可选，类路径
+- name-pattern 方法名
+- param-pattern 方法参数
+- throws-pattern 异常类型
+
+相关通配符
+
+- `*` 匹配任意数量字符
+- `..` 匹配任意子包或者匹配任意数量的参数
+- `+` 用于类型模式的后缀，指定类型及其子类型
+
+有两点需要注意：
+
+1. @Inherited注解可以让子类继承父类的注解，在匹配指定注解时有用
+2. 父类的方法有指定的注解，但是如果子类把方法重写后没有指定注解，还是不会增强方法
+
+#### 4.3.3 within
+
+目标对象匹配指定类的中的方法，`target.getClass().equals(within表达式中指定的类型)`
+
+#### 4.3.4 this
+
+代理对象匹配指定的类型，全限定类名，不支持通配符，`x.getClass().isAssignableFrom(proxy.getClass());`
+
+#### 4.3.5 target
+
+目标对象匹配指定的类型，全限定类名，不支持通配符，`x.getClass().isAssignableFrom(target.getClass());`
+
+#### 4.3.6 args
+
+匹配方法的真实传入参数是否为指定的类型，**动态切入点**，比较耗时，慎用
+
+#### 4.3.7 @within
+
+匹配指定指定注解的方法`被调用的目标方法Method对象.getDeclaringClass().getAnnotation(within中指定的注解类型) != null`，可以放在类上，匹配所有的方法
+
+注意：@Inherited注解可以让子类可以查询到父类中的注解
+
+#### 4.3.8 @target
+
+匹配目标对象上的指定注解，`target.class.getAnnotation(指定的注解类型) != null`
+
+#### 4.3.9 @args
+
+匹配方法参数所属的类上有指定的注解
+
+#### 4.3.10 @annotation
+
+匹配方法有指定的注解
+
+注意：被子类重写的方法，虽然父类方法上有注解，但是方法仍然不会被代理
+
+#### 4.3.11 bean
+
+在Spring环境中，指定名称的bean，`bean(bean名称)`
+
+使用`@EnableAspectJAutoProxy`开启在Spring中的AspectJ自动创建代理
+
+#### 4.3.12 reference pointcut
+
+引用其他切入点
+
+#### 4.3.13 组合多个pointcut
+
+使用`&&` `||` `!`逻辑运算符，组合多个pointcut
+
+### 4.4 通知
+
+- 非环绕通知注入第一个参数`org.aspectj.lang.JoinPoint`
+- 环绕通知注入第一个参数`org.aspectj.lang.ProceedingJoinPoint`
+
+1. 前置通知
+
+`org.springframework.aop.aspectj.AspectJMethodBeforeAdvice`，方法执行前执行，连接点参数JoinPoint
+
+```java
+// 前置通知
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Before {
+
+    // the pointcut expression
+    String value();
+
+    String argNames() default "";
+
+}
+```
+
+2. 返回通知
+
+`org.springframework.aop.aspectj.AspectJAfterReturningAdvice`，方法正常返回后执行，有异常不执行
+
+```java
+// 返回通知
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface AfterReturning {
+
+    String value() default "";
+
+    String pointcut() default "";
+
+    String returning() default "";
+
+    String argNames() default "";
+
+}
+```
+
+3. 异常通知
+
+`org.springframework.aop.aspectj.AspectJAfterThrowingAdvice`，方法抛出异常后执行，执行完成后继续向外抛出异常
+
+```java
+// 异常通知
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface AfterThrowing {
+
+    String value() default "";
+
+    String pointcut() default "";
+
+    // 抛出的异常名称
+    String throwing() default "";
+
+    String argNames() default "";
+
+}
+```
+
+4. 后置通知
+
+`org.springframework.aop.aspectj.AspectJAfterAdvice`，方法执行后执行，不管是否有异常都会执行
+
+```java
+// 后置通知
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface After {
+
+    String value();
+
+    String argNames() default "";
+}
+```
+
+5. 环绕通知
+
+`org.springframework.aop.aspectj.AspectJAroundAdvice`，自定义执行顺序
+
+```java
+// 环绕通知
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Around {
+
+    String value();
+
+    String argNames() default "";
+
+}
+```
 
 
 
