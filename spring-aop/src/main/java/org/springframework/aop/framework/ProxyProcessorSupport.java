@@ -16,8 +16,6 @@
 
 package org.springframework.aop.framework;
 
-import java.io.Closeable;
-
 import org.springframework.beans.factory.Aware;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.DisposableBean;
@@ -26,6 +24,8 @@ import org.springframework.core.Ordered;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
+
+import java.io.Closeable;
 
 /**
  * Base class with common functionality for proxy processors, in particular
@@ -103,8 +103,10 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 	 */
 	protected void evaluateProxyInterfaces(Class<?> beanClass, ProxyFactory proxyFactory) {
 		Class<?>[] targetInterfaces = ClassUtils.getAllInterfacesForClass(beanClass, getProxyClassLoader());
+		// 有合理的代理接口
 		boolean hasReasonableProxyInterface = false;
 		for (Class<?> ifc : targetInterfaces) {
+			// 既不是回调接口 && 也不是语言接口 && 有方法
 			if (!isConfigurationCallbackInterface(ifc) && !isInternalLanguageInterface(ifc) &&
 					ifc.getMethods().length > 0) {
 				hasReasonableProxyInterface = true;
@@ -113,11 +115,13 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 		}
 		if (hasReasonableProxyInterface) {
 			// Must allow for introductions; can't just set interfaces to the target's interfaces only.
+			// 添加代理接口
 			for (Class<?> ifc : targetInterfaces) {
 				proxyFactory.addInterface(ifc);
 			}
 		}
 		else {
+			// 设置为CGLIB代理
 			proxyFactory.setProxyTargetClass(true);
 		}
 	}
@@ -130,6 +134,7 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 	 * @param ifc the interface to check
 	 * @return whether the given interface is just a container callback
 	 */
+	// 是否配置了回调接口
 	protected boolean isConfigurationCallbackInterface(Class<?> ifc) {
 		return (InitializingBean.class == ifc || DisposableBean.class == ifc || Closeable.class == ifc ||
 				AutoCloseable.class == ifc || ObjectUtils.containsElement(ifc.getInterfaces(), Aware.class));

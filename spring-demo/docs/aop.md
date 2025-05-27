@@ -2285,6 +2285,8 @@ public @interface Pointcut {
 - 非环绕通知注入第一个参数`org.aspectj.lang.JoinPoint`
 - 环绕通知注入第一个参数`org.aspectj.lang.ProceedingJoinPoint`
 
+#### 4.4.1 分类
+
 1. 前置通知
 
 `org.springframework.aop.aspectj.AspectJMethodBeforeAdvice`，方法执行前执行，连接点参数JoinPoint
@@ -2379,7 +2381,30 @@ public @interface Around {
 }
 ```
 
+#### 4.4.2 顺序
 
+按照以下顺序：
+
+- 环绕通知
+- 前置通知
+- 方法
+- 返回通知
+- 后置通知
+- 环绕通知
+
+多个通知时，根据`@Order`顺序进行嵌套：
+
+- 环绕通知1
+- 前置通知1
+- 环绕通知2
+- 前置通知2
+- 方法
+- 返回通知2/异常通知2
+- 后置通知2
+- 环绕通知2
+- 返回通知1/异常通知1
+- 后置通知1
+- 环绕通知1
 
 ## 扩展
 

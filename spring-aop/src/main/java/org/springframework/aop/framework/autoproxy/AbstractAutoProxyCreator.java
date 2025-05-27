@@ -16,19 +16,9 @@
 
 package org.springframework.aop.framework.autoproxy;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.aopalliance.aop.Advice;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.aop.Advisor;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.TargetSource;
@@ -52,6 +42,11 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Proxy;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * {@link org.springframework.beans.factory.config.BeanPostProcessor} implementation
@@ -116,9 +111,11 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	/** Default is global AdvisorAdapterRegistry. */
+	// Advisor转换Interceptor的工具
 	private AdvisorAdapterRegistry advisorAdapterRegistry = GlobalAdvisorAdapterRegistry.getInstance();
 
 	/**
+	 * 代理配置是否被冻结
 	 * Indicates whether the proxy should be frozen. Overridden from super
 	 * to prevent the configuration from becoming frozen too early.
 	 */
@@ -129,18 +126,22 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 	private boolean applyCommonInterceptorsFirst = true;
 
+	// 自定义目标源创造器
 	@Nullable
 	private TargetSourceCreator[] customTargetSourceCreators;
 
 	@Nullable
 	private BeanFactory beanFactory;
 
+	// 存储目标源
 	private final Set<String> targetSourcedBeans = ConcurrentHashMap.newKeySet(16);
 
 	private final Map<Object, Object> earlyBeanReferences = new ConcurrentHashMap<>(16);
 
+	// 存储代理类型
 	private final Map<Object, Class<?>> proxyTypes = new ConcurrentHashMap<>(16);
 
+	// Bean 是否有Advisor
 	private final Map<Object, Boolean> advisedBeans = new ConcurrentHashMap<>(256);
 
 
@@ -245,9 +246,11 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			else {
 				targetSource = EmptyTargetSource.forClass(beanClass);
 			}
+			// 获取Bean的Advisor
 			Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(beanClass, beanName, targetSource);
 			if (specificInterceptors != DO_NOT_PROXY) {
 				this.advisedBeans.put(cacheKey, Boolean.TRUE);
+				// 创建代理类
 				proxyType = createProxyClass(beanClass, beanName, specificInterceptors, targetSource);
 				this.proxyTypes.put(cacheKey, proxyType);
 			}
@@ -431,6 +434,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		// We can't create fancy target sources for directly registered singletons.
 		if (this.customTargetSourceCreators != null &&
 				this.beanFactory != null && this.beanFactory.containsBean(beanName)) {
+			// 遍历目标源创造器创建目标源
 			for (TargetSourceCreator tsc : this.customTargetSourceCreators) {
 				TargetSource ts = tsc.getTargetSource(beanClass, beanName);
 				if (ts != null) {
