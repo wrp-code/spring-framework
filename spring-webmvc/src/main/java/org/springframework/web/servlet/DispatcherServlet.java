@@ -306,33 +306,40 @@ public class DispatcherServlet extends FrameworkServlet {
 	private boolean detectAllViewResolvers = true;
 
 	/** Throw a NoHandlerFoundException if no Handler was found to process this request? *.*/
+	// 是否抛出NoHandlerFoundException
 	private boolean throwExceptionIfNoHandlerFound = true;
 
 	/** Perform cleanup of request attributes after include request?. */
 	private boolean cleanupAfterInclude = true;
 
 	/** MultipartResolver used by this servlet. */
+	// 多部分的请求解析器
 	@Nullable
 	private MultipartResolver multipartResolver;
 
 	/** LocaleResolver used by this servlet. */
+	// 区域解析器，支持国际化视图
 	@Nullable
 	private LocaleResolver localeResolver;
 
 	/** ThemeResolver used by this servlet. */
+	// 主题解析器
 	@Deprecated
 	@Nullable
 	private ThemeResolver themeResolver;
 
 	/** List of HandlerMappings used by this servlet. */
+	// 处理请求
 	@Nullable
 	private List<HandlerMapping> handlerMappings;
 
 	/** List of HandlerAdapters used by this servlet. */
+	// 调用请求处理映射器
 	@Nullable
 	private List<HandlerAdapter> handlerAdapters;
 
 	/** List of HandlerExceptionResolvers used by this servlet. */
+	// 处理异常解析器
 	@Nullable
 	private List<HandlerExceptionResolver> handlerExceptionResolvers;
 
@@ -341,10 +348,12 @@ public class DispatcherServlet extends FrameworkServlet {
 	private RequestToViewNameTranslator viewNameTranslator;
 
 	/** FlashMapManager used by this servlet. */
+	// 将属性从一个请求传递到另一个请求的输入输出FlashMap
 	@Nullable
 	private FlashMapManager flashMapManager;
 
 	/** List of ViewResolvers used by this servlet. */
+	// 视图解析器 String => actual View
 	@Nullable
 	private List<ViewResolver> viewResolvers;
 

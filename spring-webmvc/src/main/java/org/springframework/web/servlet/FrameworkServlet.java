@@ -180,6 +180,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	private String contextAttribute;
 
 	/** WebApplicationContext implementation class to create. */
+	// ConfigurableWebApplicationContext 子类
 	private Class<?> contextClass = DEFAULT_CONTEXT_CLASS;
 
 	/** WebApplicationContext id to assign. */
@@ -187,10 +188,12 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	private String contextId;
 
 	/** Namespace for this servlet. */
+	// Defaults to [servlet-name]-servlet.
 	@Nullable
 	private String namespace;
 
 	/** Explicit context config location. */
+	// 上下文配置路径，可以指定多个，逗号隔开。
 	@Nullable
 	private String contextConfigLocation;
 

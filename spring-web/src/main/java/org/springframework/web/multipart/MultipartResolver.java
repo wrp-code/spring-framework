@@ -79,6 +79,7 @@ import jakarta.servlet.http.HttpServletRequest;
  * @see org.springframework.web.multipart.support.StringMultipartFileEditor
  * @see org.springframework.web.servlet.DispatcherServlet
  */
+// 将请求包装成MultipartHttpServletRequest
 public interface MultipartResolver {
 
 	/**

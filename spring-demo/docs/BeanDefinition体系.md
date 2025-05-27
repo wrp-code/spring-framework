@@ -193,3 +193,4 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 }
 ```
 
+另外BeanDefinition接口也继承`AttributeAccessor`和`BeanMetadataElement`
