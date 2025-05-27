@@ -57,6 +57,7 @@ import org.springframework.lang.Nullable;
  */
 public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFactory {
 
+	// AspectJ注解类
 	private static final Class<?>[] ASPECTJ_ANNOTATION_CLASSES = new Class<?>[] {
 			Pointcut.class, Around.class, Before.class, After.class, AfterReturning.class, AfterThrowing.class};
 
@@ -86,6 +87,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 
 	@Override
 	public boolean isAspect(Class<?> clazz) {
+		// 标注了Aspect注解
 		return (AnnotationUtils.findAnnotation(clazz, Aspect.class) != null &&
 				(!shouldIgnoreAjcCompiledAspects || !compiledByAjc(clazz)));
 	}
@@ -114,6 +116,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 	@SuppressWarnings("unchecked")
 	@Nullable
 	protected static AspectJAnnotation findAspectJAnnotationOnMethod(Method method) {
+		// 寻找AspectJ注解
 		for (Class<?> annotationType : ASPECTJ_ANNOTATION_CLASSES) {
 			AspectJAnnotation annotation = findAnnotation(method, (Class<Annotation>) annotationType);
 			if (annotation != null) {

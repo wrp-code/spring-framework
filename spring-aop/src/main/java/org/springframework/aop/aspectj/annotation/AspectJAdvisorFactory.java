@@ -27,6 +27,7 @@ import org.springframework.aop.framework.AopConfigException;
 import org.springframework.lang.Nullable;
 
 /**
+ * 通过注解创建AOP Advisor
  * Interface for factories that can create Spring AOP Advisors from classes
  * annotated with AspectJ annotation syntax.
  *
@@ -49,6 +50,7 @@ public interface AspectJAdvisorFactory {
 	 * @param clazz the supposed annotation-style AspectJ class
 	 * @return whether this class is recognized by AspectJ as an aspect class
 	 */
+	// 是否为切面
 	boolean isAspect(Class<?> clazz);
 
 	/**
@@ -62,6 +64,7 @@ public interface AspectJAdvisorFactory {
 	void validate(Class<?> aspectClass) throws AopConfigException;
 
 	/**
+	 * 通过Aspect工程获取Advisor
 	 * Build Spring AOP Advisors for all annotated At-AspectJ methods
 	 * on the specified aspect instance.
 	 * @param aspectInstanceFactory the aspect instance factory
@@ -71,6 +74,7 @@ public interface AspectJAdvisorFactory {
 	List<Advisor> getAdvisors(MetadataAwareAspectInstanceFactory aspectInstanceFactory);
 
 	/**
+	 * 获取指定方法定义的Advisor
 	 * Build a Spring AOP Advisor for the given AspectJ advice method.
 	 * @param candidateAdviceMethod the candidate advice method
 	 * @param aspectInstanceFactory the aspect instance factory
@@ -85,6 +89,7 @@ public interface AspectJAdvisorFactory {
 			int declarationOrder, String aspectName);
 
 	/**
+	 * 获取Advice
 	 * Build a Spring AOP Advice for the given AspectJ advice method.
 	 * @param candidateAdviceMethod the candidate advice method
 	 * @param expressionPointcut the AspectJ expression pointcut

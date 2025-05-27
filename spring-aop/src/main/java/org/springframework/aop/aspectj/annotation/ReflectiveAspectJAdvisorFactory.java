@@ -76,6 +76,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 	private static final MethodFilter adviceMethodFilter = ReflectionUtils.USER_DECLARED_METHODS
 			.and(method -> (AnnotationUtils.getAnnotation(method, Pointcut.class) == null));
 
+	// 排序
 	private static final Comparator<Method> adviceMethodComparator;
 
 	static {
@@ -123,8 +124,11 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 	@Override
 	public List<Advisor> getAdvisors(MetadataAwareAspectInstanceFactory aspectInstanceFactory) {
+		// Aspect切面类
 		Class<?> aspectClass = aspectInstanceFactory.getAspectMetadata().getAspectClass();
+		// Aspect切面类名称
 		String aspectName = aspectInstanceFactory.getAspectMetadata().getAspectName();
+		// 一些校验工作
 		validate(aspectClass);
 
 		// We need to wrap the MetadataAwareAspectInstanceFactory with a decorator
@@ -132,7 +136,9 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 		MetadataAwareAspectInstanceFactory lazySingletonAspectInstanceFactory =
 				new LazySingletonAspectInstanceFactoryDecorator(aspectInstanceFactory);
 
+		// 结果集
 		List<Advisor> advisors = new ArrayList<>();
+		// 获取所有的方法
 		for (Method method : getAdvisorMethods(aspectClass)) {
 			if (method.equals(ClassUtils.getMostSpecificMethod(method, aspectClass))) {
 				// Prior to Spring Framework 5.2.7, advisors.size() was supplied as the declarationOrderInAspect
@@ -169,6 +175,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 	private List<Method> getAdvisorMethods(Class<?> aspectClass) {
 		List<Method> methods = new ArrayList<>();
+		// 排除Pointcut
 		ReflectionUtils.doWithMethods(aspectClass, methods::add, adviceMethodFilter);
 		if (methods.size() > 1) {
 			methods.sort(adviceMethodComparator);

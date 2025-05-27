@@ -31,6 +31,7 @@ import org.springframework.lang.Nullable;
 public interface MetadataAwareAspectInstanceFactory extends AspectInstanceFactory {
 
 	/**
+	 * 获取切面元信息
 	 * Get the AspectJ AspectMetadata for this factory's aspect.
 	 * @return the aspect metadata
 	 */
