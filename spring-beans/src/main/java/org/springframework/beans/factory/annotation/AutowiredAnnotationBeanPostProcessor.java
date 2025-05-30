@@ -183,6 +183,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 
 	private final Map<Class<?>, Constructor<?>[]> candidateConstructorsCache = new ConcurrentHashMap<>(256);
 
+	// bean的注入元信息
 	private final Map<String, InjectionMetadata> injectionMetadataCache = new ConcurrentHashMap<>(256);
 
 

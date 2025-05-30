@@ -529,6 +529,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Allow post-processors to modify the merged bean definition.
 		synchronized (mbd.postProcessingLock) {
+			// 使用MergedBeanDefinitionPostProcessor
 			if (!mbd.postProcessed) {
 				try {
 					// bean生命周期阶段7：合并后的BeanDefinition处理阶段
@@ -1392,7 +1393,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// 阶段8.1：Bean属性设置阶段 > 实例化后阶段
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
-				// true跳过赋值阶段，在方法内部可以自定义属性赋值
+				// false跳过赋值阶段，在方法内部可以自定义属性赋值
 				if (!bp.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName)) {
 					return;
 				}
@@ -1415,6 +1416,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 			pvs = newPvs;
 		}
+
 		// 阶段8.2：Bean属性设置阶段 > 赋值前阶段
 		//AutowiredAnnotationBeanPostProcessor在这个方法中对@Autowired、@Value标注的字段、方法注入值。
 		//CommonAnnotationBeanPostProcessor在这个方法中对@Resource标注的字段和方法注入值。
